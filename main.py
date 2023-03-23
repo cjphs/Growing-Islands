@@ -101,16 +101,16 @@ if __name__ == "__main__":
     log("Finished core iteration 2.")
 
     cores3 = []
-    # for i in range(0, N):
-    #     core = cores2[i].copy()
-    #     for other in neighborhood_dict[i]:
+    for i in range(0, N):
+        core = cores2[i].copy()
+        for other in neighborhood_dict[i]:
             
-    #         l = Line(other[1].p1, other[1].p2)
-    #         reflection = cores2[tessellation.polygons.index(other[0])].reflect(l)
+            l = Line(other[1].p1, other[1].p2)
+            reflection = cores2[tessellation.polygons.index(other[0])].reflect(l)
 
-    #         core = polygon_intersection(core, reflection)
+            core = polygon_intersection(core, reflection)
 
-    #     cores3.append(core)
+        cores3.append(core)
 
     finish = datetime.now()
 
