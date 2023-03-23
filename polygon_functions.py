@@ -33,8 +33,11 @@ def in_polygon_bounds(x, y, poly:Polygon):
 
 def polygon_intersection(poly1, poly2):
 
-    if type(poly1) == list or type(poly2) == list:
-        print('b1', poly1, 'b2', poly2)
+    # hack fix in case types fuck up for whatever reason
+    if type(poly1) == list:
+        poly1 = Polygon(*poly1)
+    elif type(poly2) == list:
+        poly2 = Polygon(*poly2)
 
     b1 = poly1.bounds
     b2 = poly2.bounds

@@ -97,6 +97,21 @@ if __name__ == "__main__":
 
         cores2.append(core)
 
+    
+    log("Finished core iteration 2.")
+
+    cores3 = []
+    # for i in range(0, N):
+    #     core = cores2[i].copy()
+    #     for other in neighborhood_dict[i]:
+            
+    #         l = Line(other[1].p1, other[1].p2)
+    #         reflection = cores2[tessellation.polygons.index(other[0])].reflect(l)
+
+    #         core = polygon_intersection(core, reflection)
+
+    #     cores3.append(core)
+
     finish = datetime.now()
 
     duration = finish - start
@@ -108,6 +123,8 @@ if __name__ == "__main__":
     plot_polygons(tessellation.polygons,style='r-')
     plot_polygons(cores,style="c--")
     plot_polygons(cores2,style='b--')
+    plot_polygons(cores3,style='g--')
+    
     for p in points:
         plt.plot(p[0], p[1], 'ro')
     plt.show()
