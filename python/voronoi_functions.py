@@ -22,8 +22,6 @@ def voronoi_to_polygons(vor:Voronoi):
 
     bounding_poly = Polygon((0,0), (1,0), (1,1), (0,1))
 
-    neighborhood_dict = {}
-
     index = 0
 
     for region in vor.regions:
@@ -46,4 +44,4 @@ def voronoi_to_polygons(vor:Voronoi):
             polygons.append(region_polygon)
             
 
-    return [polygons, neighborhood_dict]
+    return polygons
