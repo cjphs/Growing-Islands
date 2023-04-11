@@ -1,6 +1,7 @@
-from sympy.geometry import Polygon, Line
-from polygon_functions import polygon_intersection
+from sympy.geometry import Polygon, Line, Segment2D
+from polygon_functions import polygon_intersection, plot_polygon
 from helpers import log
+from matplotlib import pyplot as plt
 
 class Tessellation:
     def __init__(self, regions:list=[], neighborhood_dict={}):
@@ -41,17 +42,23 @@ class Tessellation:
     def compute_cores(self):
         new_cores = [None for i in range(0, len(self.cores))]
 
+        e_ind = 0
         for e in self.edges:
+            print(f'{e_ind+1}')
             region1_core = self.cores[e[1]]
             region2_core = self.cores[e[2]]
 
             region1_reflect = region1_core.reflect(e[0])
             region2_reflect = region2_core.reflect(e[0])
 
-            new_cores[e[1]] = polygon_intersection(region1_core, region2_reflect)
-            new_cores[e[2]] = polygon_intersection(region2_core, region1_reflect)
+            self.cores[e[1]] = polygon_intersection(region1_core, region2_reflect)
+            self.cores[e[2]] = polygon_intersection(region2_core, region1_reflect)
 
-        self.cores = new_cores
+            plot_polygon(self.cores[e[1]], l='--', alpha=0.04)
+            plot_polygon(self.cores[e[2]], l='--', alpha=0.04)
+            plt.pause(1e-10)
+
+        # self.cores = new_cores
 
         return self.cores.copy()
 
@@ -76,7 +83,7 @@ class Tessellation:
 
                     intersect = polygon_intersection(region, other)
 
-                    if intersect != []:
+                    if intersect != [] and type(intersect[0]) == Segment2D:
                         log("Segment found: ", intersect)
                         self.neighborhood_dict[i].append({'index': j, 'region':other, 'edge':intersect[0]})
                         line = Line(intersect[0].p1, intersect[0].p2)

@@ -12,7 +12,7 @@ def plot_polygons(polys:list, style:str="-"):
     
 
 
-def plot_polygon(poly, l='-', txt:str=""):    
+def plot_polygon(poly, l='-', txt:str="", alpha=1):    
 
     coords = [[v.x, v.y] for v in poly.vertices]
         
@@ -20,17 +20,17 @@ def plot_polygon(poly, l='-', txt:str=""):
     plt.text(cntr.x, cntr.y, txt)
         
     coords = [[v.x, v.y] for v in poly.vertices]
+    coords.append(coords[0])
+
     xs, ys = zip(*coords)
-    plt.plot(xs, ys, l)
-    
-    ax = plt.gca()
-    ax.set_aspect('equal', adjustable='box')
+    plt.plot(xs, ys, l, alpha=alpha)
 
 
 def in_polygon_bounds(x, y, poly:Polygon):
     b = poly.bounds
     return (x < b[2] and y < b[3] and x > b[0] and y > b[1])
 
+# not working...
 def point_in_poly(point:Point2D, poly:Polygon):
     if type(poly) == Segment2D or type(poly) == Point2D or type(poly) == Triangle:
         return poly.encloses_point(point)
@@ -68,7 +68,7 @@ def point_in_poly(point:Point2D, poly:Polygon):
     return False
 
 
-def polygon_intersection(poly1, poly2):
+def polygon_intersection(poly1:Polygon, poly2:Polygon):
 
     # hack fix in case types fuck up for whatever reason
     if type(poly1) == list:
@@ -90,14 +90,14 @@ def polygon_intersection(poly1, poly2):
         if not in_polygon_bounds(_.x, _.y, poly2):
             continue
 
-        if point_in_poly(_, poly2) and not _ in p:
+        if poly2.encloses_point(_) and not _ in p:
             p.append(_)
             
     for _ in poly2.vertices:
         if not in_polygon_bounds(_.x, _.y, poly1):
             continue
 
-        if point_in_poly(_, poly1) and not _ in p:
+        if poly1.encloses_point(_) and not _ in p:
             p.append(_)
 
     # UGLY!
