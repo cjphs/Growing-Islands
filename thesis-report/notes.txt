@@ -1,0 +1,11 @@
+hm...
+
+1-D Case?
+2-D Extension?
+
+omega, phi...
+
+Proof for line distance criteria...?
+
+Future work!
+-> 3-D case...?
