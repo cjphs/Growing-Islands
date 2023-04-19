@@ -2,6 +2,14 @@ from point import Point
 from scipy.spatial import Voronoi
 from math import sqrt
 
+
+def get_region_estimator_point(estimator_points, region_label):
+    for p in estimator_points:
+        if p.label == region_label:
+            return p
+    return None
+
+
 def generate_label_points(vor:Voronoi, omega:float) -> list:
     
     label_points = []
@@ -17,7 +25,7 @@ def generate_label_points(vor:Voronoi, omega:float) -> list:
         l = r.copy()
 
         # exclude -1 index vertices & use length 3 to form bisectors
-        if len(l) < 3 or -1 in l:
+        if len(l) < 2 or -1 in l:
             continue
 
         center_x = 0
@@ -61,7 +69,7 @@ def generate_label_points(vor:Voronoi, omega:float) -> list:
             p3[1] = p1[1] + omega * p3[1]/len_p3
 
             # Add correct region as label
-            point = Point(p3[0], p3[1], region_index)
+            point = Point(p3[0], p3[1], label=region_index, origin_point_x=p1[0], origin_point_y=p1[1])
 
             region_point_count[region_index] += 1
 
@@ -75,5 +83,3 @@ def generate_label_points(vor:Voronoi, omega:float) -> list:
         estimator_points.append(Point(center_x, center_y, region_index))
     
     return [label_points, estimator_points, region_point_count]
-
-\
