@@ -11,6 +11,8 @@ from nn_gradient import nudge_estimators
 def voronoi_from_points(points:list[Point]) -> Voronoi:
     return Voronoi([[p.x, p.y] for p in points])
 
+#TODO: #1 force voronoi plot to be in xmin xmax ymin ymax boundary
+
 if __name__ == "__main__":
 
     omega = .001
