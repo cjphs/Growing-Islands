@@ -2,11 +2,11 @@ from matplotlib import pyplot as plt
 from scipy.spatial import Voronoi, voronoi_plot_2d
 
 from input_generation.random_voronoi import generate_random_voronoi
-from nn_gradient_funcs import generate_label_points
+
+from preprocessing import generate_label_points
+from nudging import nudge_estimators
 
 from geometry.point import Point
-
-from nn_gradient import nudge_estimators
 
 def voronoi_from_points(points:list[Point]) -> Voronoi:
     return Voronoi([[p.x, p.y] for p in points])
