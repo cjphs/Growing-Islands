@@ -2,10 +2,11 @@ from matplotlib import pyplot as plt
 from math import sqrt
 
 class Point:
-    def __init__(self, x, y, label=-1, origin_point_x=0, origin_point_y=0):
+    def __init__(self, x, y, label=-1, origin_point_x=0, origin_point_y=0, plot_element=None):
         self.x, self.y, self.label = x, y, label
         self.origin_point_x = origin_point_x
         self.origin_point_y = origin_point_y
+        self.plot_element = plot_element
 
 
     def distance(self, other):
@@ -45,6 +46,10 @@ class Point:
         
     def plot(self, style='co'):
         plt.plot(self.x, self.y, style)
+
+
+    def update_plot(self):
+        self.plot_element[0].set_data([self.x], [self.y])
 
     
     def __str__(self):

@@ -1,6 +1,7 @@
-from point import Point
+from geometry.point import Point
 from scipy.spatial import Voronoi
 from math import sqrt
+from matplotlib import pyplot as plt
 
 
 def get_region_estimator_point(estimator_points, region_label):
@@ -70,6 +71,7 @@ def generate_label_points(vor:Voronoi, omega:float) -> list:
 
             # Add correct region as label
             point = Point(p3[0], p3[1], label=region_index, origin_point_x=p1[0], origin_point_y=p1[1])
+            point.plot_element = plt.plot(p3[0], p3[1], 'ro')
 
             region_point_count[region_index] += 1
 
@@ -80,6 +82,8 @@ def generate_label_points(vor:Voronoi, omega:float) -> list:
         center_x /= len(l)
         center_y /= len(l)
 
-        estimator_points.append(Point(center_x, center_y, region_index))
+        point = Point(center_x, center_y, region_index)
+        point.plot_element = plt.plot(center_x, center_y, 'co')
+        estimator_points.append(point)
     
     return [label_points, estimator_points, region_point_count]
