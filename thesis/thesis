@@ -1,0 +1,1 @@
+python3 thesis.py --omega $1 --phi $2 --gui True

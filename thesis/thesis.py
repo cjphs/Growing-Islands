@@ -29,11 +29,25 @@ def on_press(event):
     if event.key == 'x':
         done = True
 
+def get_arg(args, arg_name):
+    if arg_name in args:
+        return args[args.index(arg_name) + 1]
+    return None
 
 if __name__ == "__main__":
+    gui = True
 
-    omega = .002
-    phi = .0002
+    omega, phi= .002, .0002
+
+    om = get_arg(sys.argv, "--omega")
+    if om != None:
+         omega = float(om)
+    ph = get_arg(sys.argv, "--phi")
+    if ph != None:
+         phi = float(ph)
+    gu = get_arg(sys.argv, "--gui")
+    if gu != None:
+         gui = bool(gu)
 
     num_points = 20
 
@@ -43,7 +57,7 @@ if __name__ == "__main__":
     show_input_generators = True
 
     plt.figure()
-    
+
     vor = generate_random_voronoi(num_points,xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax)
 
     # Plot the original input diagram
@@ -51,7 +65,7 @@ if __name__ == "__main__":
     enforce_plot_scale(xmin,xmax,ymin,ymax)
     plt.title(label="Input diagram")
     plt.waitforbuttonpress(0)
-    
+
     points = generate_label_points(vor, omega)
 
     label_points = points[0]
