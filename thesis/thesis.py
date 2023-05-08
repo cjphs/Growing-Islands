@@ -49,7 +49,7 @@ if __name__ == "__main__":
     if gu != None:
          gui = bool(gu)
 
-    num_points = 20
+    num_points = 60
 
     xmin,xmax = 0,1
     ymin,ymax = 0,1
@@ -75,6 +75,8 @@ if __name__ == "__main__":
 
     for p in estimator_points:
         plt.plot(p.x, p.y, "b+", alpha=.2)
+        p.x = min(max(p.x, xmin), xmax)
+        p.y = min(max(p.y, ymin), ymax)
 
     voronoi_plot_2d(original_approximation, line_colors='orange', line_alpha=0.2, ax=plt.gca(), show_points=False, show_vertices=False)
     enforce_plot_scale(xmin,xmax,ymin,ymax)
@@ -122,10 +124,10 @@ if __name__ == "__main__":
     voronoi_plot_2d(new_vor, ax=plt.gca(), line_alpha=.5, line_colors='blue')
     enforce_plot_scale(xmin,xmax,ymin,ymax)
 
-    plt.figure()
-    plt.plot(points_satisfied)
-    plt.title(label="Percentage of label points satisfied over time")
+    plt.pause(1e-10)
 
-    print(points_satisfied)
+    plt.figure()
+    plt.plot(points_satisfied, color='black')
+    plt.title(label="Percentage of label points satisfied over time")
 
     plt.show()
