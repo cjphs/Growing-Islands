@@ -30,8 +30,10 @@ def nudge_estimators(estimator_points:list[Point], label_points:list[Point], phi
             points_nudged = True
 
             label_point.plot_element[0].set_markerfacecolor('r')
+            label_point.satisfied = False
         else:
             label_point.plot_element[0].set_markerfacecolor('lime')
+            label_point.satisfied = True
 
     # debug print nudges
     # s = ''

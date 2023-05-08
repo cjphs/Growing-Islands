@@ -89,6 +89,8 @@ if __name__ == "__main__":
 
     trajectory_interval = 0
 
+    points_satisfied = []
+
     while(not done):
         nudged = nudge_estimators(estimator_points, label_points, phi, pull=True, push=True)
         iterations += 1
@@ -99,6 +101,13 @@ if __name__ == "__main__":
 
         for p in estimator_points:
             p.update_plot()
+
+        satisfied_count = 0
+        for l in label_points:
+            if l.satisfied:
+                satisfied_count += 1
+
+        points_satisfied.append(satisfied_count/len(label_points))
 
         trajectory_interval -= 1
         if trajectory_interval < 0:
@@ -112,5 +121,11 @@ if __name__ == "__main__":
     new_vor = voronoi_from_points(estimator_points)
     voronoi_plot_2d(new_vor, ax=plt.gca(), line_alpha=.5, line_colors='blue')
     enforce_plot_scale(xmin,xmax,ymin,ymax)
+
+    plt.figure()
+    plt.plot(points_satisfied)
+    plt.title(label="Percentage of label points satisfied over time")
+
+    print(points_satisfied)
 
     plt.show()

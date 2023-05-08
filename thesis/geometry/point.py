@@ -8,6 +8,8 @@ class Point:
         self.origin_point_y = origin_point_y
         self.plot_element = plot_element
 
+        self.satisfied = False
+
 
     def distance(self, other):
         if type(other) == Point:
