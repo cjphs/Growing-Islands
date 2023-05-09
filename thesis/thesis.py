@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
 from scipy.spatial import Voronoi, voronoi_plot_2d
 
-from input_generation.random_voronoi import generate_random_voronoi
+from input_generation.voronoi_funcs import generate_random_voronoi, voronoi_from_points
 
 from preprocessing import generate_label_points
 from nudging import nudge_estimators
@@ -13,21 +13,13 @@ import sys
 
 from datetime import datetime
 
-def voronoi_from_points(points:list[Point]) -> Voronoi:
-    return Voronoi([[p.x, p.y] for p in points])
-
-#TODO: #1 force voronoi plot to be in xmin xmax ymin ymax boundary
-
 def enforce_plot_scale(xmin,xmax,ymin,ymax):
     ax = plt.gca()
     ax.set_xlim([xmin, xmax])
     ax.set_ylim([ymin, ymax])
 
-done = False
-
 def on_press(event):
     global done
-    print('press', event.key)
     sys.stdout.flush()
     if event.key == 'x':
         done = True
@@ -37,7 +29,7 @@ def get_arg(args, arg_name):
         return args[args.index(arg_name) + 1]
     return None
 
-if __name__ == "__main__":
+def main():
     gui = True
 
     omega, phi= .002, .0002
@@ -63,13 +55,11 @@ if __name__ == "__main__":
 
     show_input_generators = True
 
-    if gui:
-        plt.figure()
-
     vor = generate_random_voronoi(num_points,xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax)
 
     # Plot the original input diagram
     if gui:
+        plt.figure()
         voronoi_plot_2d(vor, ax=plt.gca(), line_width=.5,  show_points=show_input_generators, show_vertices=False)
         enforce_plot_scale(xmin,xmax,ymin,ymax)
         plt.title(label="Input diagram")
@@ -97,16 +87,10 @@ if __name__ == "__main__":
         plt.title(label="Nudging generator approximations...")
 
     iterations = 0
-
-
-    trajectory_interval = 0
-
     points_satisfied = []
-
-    update_plot = False
-
     begin = datetime.now()
 
+    done = False
     while(not done):
         nudged = nudge_estimators(estimator_points, label_points, phi, pull=True, push=True)
         iterations += 1
@@ -158,3 +142,7 @@ if __name__ == "__main__":
     plt.title(label="Percentage of label points satisfied over time")
 
     plt.show()
+
+
+if __name__ == "__main__":
+    main()

@@ -1,6 +1,8 @@
 from scipy.spatial import Voronoi
 from random import uniform as U
 
+from geometry.point import Point
+
 def generate_random_points(num_points:int=20, xmin=0, xmax=1, ymin=0, ymax=1) -> list[list[int, int]]:
     points = []
     while(num_points > 0):
@@ -13,3 +15,5 @@ def generate_random_voronoi(num_points:int=20, xmin=0, xmax=1, ymin=0, ymax=1) -
     vor = Voronoi(points)
     return vor
 
+def voronoi_from_points(points:list[Point]) -> Voronoi:
+    return Voronoi([[p.x, p.y] for p in points])
