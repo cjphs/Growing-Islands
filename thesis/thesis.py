@@ -8,7 +8,10 @@ from nudging import nudge_estimators
 
 from geometry.point import Point
 
+from math import ceil, floor
 import sys
+
+from datetime import datetime
 
 def voronoi_from_points(points:list[Point]) -> Voronoi:
     return Voronoi([[p.x, p.y] for p in points])
@@ -39,6 +42,11 @@ if __name__ == "__main__":
 
     omega, phi= .002, .0002
 
+    num_points = 20
+
+    num = get_arg(sys.argv, "--num_points")
+    if num != None:
+        num_points = int(num)
     om = get_arg(sys.argv, "--omega")
     if om != None:
          omega = float(om)
@@ -47,24 +55,25 @@ if __name__ == "__main__":
          phi = float(ph)
     gu = get_arg(sys.argv, "--gui")
     if gu != None:
-         gui = bool(gu)
-
-    num_points = 20
+         if gu == "False":
+            gui = False
 
     xmin,xmax = 0,1
     ymin,ymax = 0,1
 
     show_input_generators = True
 
-    plt.figure()
+    if gui:
+        plt.figure()
 
     vor = generate_random_voronoi(num_points,xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax)
 
     # Plot the original input diagram
-    voronoi_plot_2d(vor, ax=plt.gca(), line_width=.5,  show_points=show_input_generators, show_vertices=False)
-    enforce_plot_scale(xmin,xmax,ymin,ymax)
-    plt.title(label="Input diagram")
-    plt.waitforbuttonpress(0)
+    if gui:
+        voronoi_plot_2d(vor, ax=plt.gca(), line_width=.5,  show_points=show_input_generators, show_vertices=False)
+        enforce_plot_scale(xmin,xmax,ymin,ymax)
+        plt.title(label="Input diagram")
+        plt.waitforbuttonpress(0)
 
     points = generate_label_points(vor, omega)
 
@@ -73,27 +82,30 @@ if __name__ == "__main__":
 
     original_approximation = voronoi_from_points(estimator_points)
 
-    for p in estimator_points:
-        plt.plot(p.x, p.y, "b+", alpha=.2)
-        p.x = min(max(p.x, xmin), xmax)
-        p.y = min(max(p.y, ymin), ymax)
+    if gui:
+        for p in estimator_points:
+            plt.plot(p.x, p.y, "b+", alpha=.2)
+            p.x = min(max(p.x, xmin), xmax)
+            p.y = min(max(p.y, ymin), ymax)
 
-    voronoi_plot_2d(original_approximation, line_colors='orange', line_alpha=0.2, ax=plt.gca(), show_points=False, show_vertices=False)
-    enforce_plot_scale(xmin,xmax,ymin,ymax)
-    plt.title(label="Centroid approximation")
-    plt.waitforbuttonpress(0)
+        voronoi_plot_2d(original_approximation, line_colors='orange', line_alpha=0.2, ax=plt.gca(), show_points=False, show_vertices=False)
+        enforce_plot_scale(xmin,xmax,ymin,ymax)
+        plt.title(label="Centroid approximation")
+        plt.waitforbuttonpress(0)
 
-    plt.gcf().canvas.mpl_connect('key_press_event', on_press)
+        plt.gcf().canvas.mpl_connect('key_press_event', on_press)
+        plt.title(label="Nudging generator approximations...")
 
     iterations = 0
 
-    plt.title(label="Nudging generator approximations...")
 
     trajectory_interval = 0
 
     points_satisfied = []
 
     update_plot = False
+
+    begin = datetime.now()
 
     while(not done):
         nudged = nudge_estimators(estimator_points, label_points, phi, pull=True, push=True)
@@ -103,7 +115,7 @@ if __name__ == "__main__":
             plt.title(label="All label points satisfied!")
             done = True
 
-        if update_plot:
+        if gui:
             for p in estimator_points:
                 p.update_plot()
 
@@ -116,9 +128,23 @@ if __name__ == "__main__":
 
         points_satisfied.append(satisfied_percentage)
 
-        print(f"{iterations}: {'%.2f' % satisfied_percentage}")
+        percent_bar_length = 20
 
-        plt.pause(1e-10)
+        m = floor(satisfied_percentage*20)
+
+        percent_bar = m * "█" + (percent_bar_length - m) * "░"
+
+        progress = f"{percent_bar} ({iterations} iterations)"
+
+        sys.stdout.write("\r" + progress)
+        sys.stdout.flush()
+
+        if gui:
+            plt.pause(1e-10)
+
+    end = datetime.now()
+
+    print(f"Finished in {end - begin}")
 
     # generate new voronoi diagram from final estimator point positions
     new_vor = voronoi_from_points(estimator_points)
