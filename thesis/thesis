@@ -1,1 +1,1 @@
-python3 thesis.py --num_points $1 --omega $2 --phi $3 --gui False
+python3 thesis.py --omega $1 --phi $2 --num_points $3 --gui $4
