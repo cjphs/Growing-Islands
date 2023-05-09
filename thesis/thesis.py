@@ -49,7 +49,7 @@ if __name__ == "__main__":
     if gu != None:
          gui = bool(gu)
 
-    num_points = 60
+    num_points = 20
 
     xmin,xmax = 0,1
     ymin,ymax = 0,1
@@ -93,6 +93,8 @@ if __name__ == "__main__":
 
     points_satisfied = []
 
+    update_plot = False
+
     while(not done):
         nudged = nudge_estimators(estimator_points, label_points, phi, pull=True, push=True)
         iterations += 1
@@ -101,21 +103,20 @@ if __name__ == "__main__":
             plt.title(label="All label points satisfied!")
             done = True
 
-        for p in estimator_points:
-            p.update_plot()
+        if update_plot:
+            for p in estimator_points:
+                p.update_plot()
 
         satisfied_count = 0
         for l in label_points:
             if l.satisfied:
                 satisfied_count += 1
 
-        points_satisfied.append(satisfied_count/len(label_points))
+        satisfied_percentage = satisfied_count/len(label_points)
 
-        trajectory_interval -= 1
-        if trajectory_interval < 0:
-            trajectory_interval = 50
+        points_satisfied.append(satisfied_percentage)
 
-        print(trajectory_interval)
+        print(f"{iterations}: {'%.2f' % satisfied_percentage}")
 
         plt.pause(1e-10)
 
