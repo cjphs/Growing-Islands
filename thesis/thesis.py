@@ -32,9 +32,9 @@ def get_arg(args, arg_name):
 def main():
     gui = True
 
-    omega, phi= .002, .0002
+    omega, phi= .98, .0002
 
-    num_points = 20
+    num_points = 50
 
     num = get_arg(sys.argv, "--num_points")
     if num != None:
@@ -65,10 +65,7 @@ def main():
         plt.title(label="Input diagram")
         plt.waitforbuttonpress(0)
 
-    points = generate_label_points(vor, omega)
-
-    label_points = points[0]
-    estimator_points = points[1]
+    label_points, estimator_points = generate_label_points(vor, omega)
 
     original_approximation = voronoi_from_points(estimator_points)
 

@@ -11,7 +11,107 @@ def get_region_estimator_point(estimator_points, region_label):
     return None
 
 
+def generate_label_points323(vor:Voronoi, omega:float) -> list:
+
+    label_points = []
+    estimator_points = []
+
+    region_index = -1
+    for r in vor.regions:
+        region_index += 1
+
+        l = r.copy()
+
+        # exclude -1 index vertices & use length 3 to form bisectors
+        if len(l) < 2 or -1 in l:
+            continue
+
+        center_x = 0
+        center_y = 0
+
+        points_temp = []
+
+        # first find center
+        for point in l:
+
+            corner_x = vor.vertices[point][0]
+            corner_y = vor.vertices[point][1]
+            
+            center_x += vor.vertices[point][0]
+            center_y += vor.vertices[point][1]
+            
+            points_temp.append(Point(corner_x, corner_y, label=region_index))
+        
+        center = Point(center_x/len(l), center_y/len(l), label=region_index)
+        center.plot_element = plt.plot(center.x, center.y, 'bo')
+        estimator_points.append(center)
+
+        for lbl in points_temp:
+            delta = center + center.direction_to(lbl) * center.distance(lbl) * omega
+
+            delta.origin_point_x = lbl.x
+            delta.origin_point_y = lbl.y
+            delta.plot_element = plt.plot(delta.x, delta.y, 'ro')
+            delta.label = region_index
+
+            label_points.append(delta)
+
+    print(len(label_points), len(estimator_points))
+
+    return label_points, estimator_points
+
+
+
 def generate_label_points(vor:Voronoi, omega:float) -> list:
+
+    label_points = []
+    estimator_points = []
+
+    region_index = -1
+    for region in vor.regions:
+        region_index += 1
+
+        n = len(region)
+
+        if n < 2 or -1 in region:
+            continue
+
+        center_x = 0
+        center_y = 0
+
+        region_label_points = []
+
+        for point in region:
+
+            corner_x = vor.vertices[point][0]
+            corner_y = vor.vertices[point][1]
+
+            center_x += corner_x
+            center_y += corner_y
+
+            corner_point = Point(corner_x, corner_y, label=region_index)
+            corner_point.origin_point_x = corner_x
+            corner_point.origin_point_y = corner_y
+            
+            region_label_points.append(corner_point)
+        
+        center = Point(center_x/n, center_y/n, label=region_index)
+        center.plot_element = plt.plot(center.x, center.y, 'bo')
+        estimator_points.append(center)
+
+        for l in region_label_points:
+            delta = center + center.direction_to(l) * center.distance(l) * omega
+
+            l.set_position(delta.x, delta.y)
+            l.plot_element = plt.plot(delta.x, delta.y, 'ro')
+        
+        label_points.extend(region_label_points)
+    
+    return label_points, estimator_points
+
+
+# Keep for legacy reasons
+def generate_label_points_old(vor:Voronoi, omega:float) -> list:
     
     label_points = []
     estimator_points = []
@@ -86,4 +186,4 @@ def generate_label_points(vor:Voronoi, omega:float) -> list:
         point.plot_element = plt.plot(center_x, center_y, 'co')
         estimator_points.append(point)
     
-    return [label_points, estimator_points, region_point_count]
+    return label_points, estimator_points

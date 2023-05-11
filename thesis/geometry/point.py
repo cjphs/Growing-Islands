@@ -17,11 +17,11 @@ class Point:
         else:
             return None
 
-
     def direction_to(self, other):
         dist = self.distance(other)
-        dx = (other.x - self.x)/dist
-        dy = (other.y - self.y)/dist
+
+        dx = (other.x - self.x) / dist
+        dy = (other.y - self.y) / dist
 
         return Point(dx, dy)
     
@@ -30,7 +30,13 @@ class Point:
 
     def __mul__(self, value):
         return Point(self.x * value, self.y * value, self.label)
+    
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
 
+    def set_position(self, x, y):
+        self.x = x
+        self.y = y
 
     def closest_point_in_list(self, points_list):
         closest_point = None
