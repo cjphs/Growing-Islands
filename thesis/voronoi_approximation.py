@@ -10,19 +10,19 @@ from math import floor
 
 class VoronoiApproximation:
 
-    def __init__(self, diagram, omega, phi):
+    def __init__(self, diagram, omega, phi, gui=False):
         self.diagram = diagram
         self.omega = omega
         self.phi = phi
 
-        self.gui = False
+        self.gui = gui
 
         self.label_points, self.estimator_points = generate_label_points(diagram, omega)
 
 
-    def do_thingy(self):
+    def do_thingy(self, margin=0):
         iterations = 0
-        points_satisfied = []
+        self.points_satisfied = []
         begin = datetime.now()
 
         done = False
@@ -45,7 +45,10 @@ class VoronoiApproximation:
 
             satisfied_percentage = satisfied_count/len(self.label_points)
 
-            points_satisfied.append(satisfied_percentage)
+            if satisfied_count - margin >= len(self.label_points):
+                done = True
+
+            self.points_satisfied.append(satisfied_percentage)
 
             percent_bar_length = os.get_terminal_size().columns
 
@@ -66,9 +69,5 @@ class VoronoiApproximation:
         sys.stdout.write("\r" + f"Finished in {end - begin} ({iterations} iterations)")
         sys.stdout.flush()
         print()
-
-        plt.figure()
-        plt.plot(points_satisfied, color='black')
-        plt.title(label="Percentage of label points satisfied over time")
 
         return self.estimator_points

@@ -31,8 +31,8 @@ def get_arg(args, arg_name):
 def main():
     gui = True
 
-    omega   = .95
-    phi     = .00025
+    omega   = .995
+    phi     = .0002
 
     num_points = 50
 
@@ -65,7 +65,7 @@ def main():
         plt.title(label="Input diagram")
         plt.waitforbuttonpress(0)
 
-    approximation = VoronoiApproximation(vor, omega, phi)
+    approximation = VoronoiApproximation(vor, omega, phi, gui=gui)
 
     original_approximation = voronoi_from_points(approximation.estimator_points)
 
@@ -83,15 +83,18 @@ def main():
         plt.gcf().canvas.mpl_connect('key_press_event', on_press)
         plt.title(label="Nudging generator approximations...")
 
-    approximation.do_thingy()
+    approximation.do_thingy(margin=1)
 
     # generate new voronoi diagram from final estimator point positions
     new_vor = voronoi_from_points(approximation.estimator_points)
     voronoi_plot_2d(new_vor, ax=plt.gca(), line_alpha=.5, line_colors='blue')
     enforce_plot_scale(xmin,xmax,ymin,ymax)
 
-    plt.pause(1e-10)
+    plt.figure()
+    plt.plot(approximation.points_satisfied, color='black')
+    plt.title(label="Percentage of label points satisfied over time")
 
+    plt.pause(1e-10)
     plt.show()
 
 
