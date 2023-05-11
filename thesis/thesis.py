@@ -11,6 +11,8 @@ from geometry.point import Point
 from math import ceil, floor
 import sys
 
+import os
+
 from datetime import datetime
 
 def enforce_plot_scale(xmin,xmax,ymin,ymax):
@@ -109,13 +111,13 @@ def main():
 
         points_satisfied.append(satisfied_percentage)
 
-        percent_bar_length = 20
+        percent_bar_length = os.get_terminal_size().columns
 
-        m = floor(satisfied_percentage*20)
+        m = floor(satisfied_percentage * percent_bar_length)
 
         percent_bar = m * "█" + (percent_bar_length - m) * "░"
 
-        progress = f"{percent_bar} ({iterations} iterations)"
+        progress = f"{percent_bar}"
 
         sys.stdout.write("\r" + progress)
         sys.stdout.flush()
@@ -125,7 +127,9 @@ def main():
 
     end = datetime.now()
 
-    print(f"Finished in {end - begin}")
+    sys.stdout.write("\r" + f"Finished in {end - begin} ({iterations} iterations)")
+    sys.stdout.flush()
+    print()
 
     # generate new voronoi diagram from final estimator point positions
     new_vor = voronoi_from_points(estimator_points)
