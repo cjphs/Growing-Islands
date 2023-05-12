@@ -20,7 +20,7 @@ class VoronoiApproximation:
         self.label_points, self.estimator_points = generate_label_points(diagram, omega)
 
 
-    def do_thingy(self, margin=0):
+    def do_thingy(self, margin=1):
         iterations = 0
         self.points_satisfied = []
         begin = datetime.now()
@@ -45,7 +45,7 @@ class VoronoiApproximation:
 
             satisfied_percentage = satisfied_count/len(self.label_points)
 
-            if satisfied_count - margin >= len(self.label_points):
+            if satisfied_percentage >= margin:
                 done = True
 
             self.points_satisfied.append(satisfied_percentage)

@@ -34,6 +34,8 @@ def main():
     omega   = .995
     phi     = .0002
 
+    margin = .95
+
     num_points = 50
 
     num = get_arg(sys.argv, "--num_points")
@@ -41,14 +43,17 @@ def main():
         num_points = int(num)
     om = get_arg(sys.argv, "--omega")
     if om != None:
-         omega = float(om)
+        omega = float(om)
     ph = get_arg(sys.argv, "--phi")
     if ph != None:
-         phi = float(ph)
+        phi = float(ph)
     gu = get_arg(sys.argv, "--gui")
     if gu != None:
-         if gu == "False":
+        if gu == "False":
             gui = False
+    ma = get_arg(sys.argv, "--margin")
+    if ma != None:
+        margin = float(ma)
 
     xmin,xmax = 0,1
     ymin,ymax = 0,1
@@ -83,7 +88,7 @@ def main():
         plt.gcf().canvas.mpl_connect('key_press_event', on_press)
         plt.title(label="Nudging generator approximations...")
 
-    approximation.do_thingy(margin=1)
+    approximation.do_thingy(margin=margin)
 
     # generate new voronoi diagram from final estimator point positions
     new_vor = voronoi_from_points(approximation.estimator_points)
