@@ -65,9 +65,9 @@ def main():
     vor = generate_random_voronoi(num_points,xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax)
 
 
-    #diagram = Diagram(txt_file="test.txt")
+    #diagram = Diagram(txt_file="in/test.txt")
     diagram = Diagram(voronoi=vor)
-    diagram.save_to_txt(f"{datetime.now().strftime(f'%H-%M-%S_{num_points}_{omega}')}.txt")
+    diagram.save_to_txt(f"in/{datetime.now().strftime(f'%H-%M-%S_{num_points}_{omega}')}.txt")
 
     # Plot the original input diagram
     if gui:
