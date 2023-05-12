@@ -1,8 +1,6 @@
 from geometry.point import Point
 from preprocessing import get_region_estimator_point
 
-#TODO: #2 Rename & restructure nn_gradient files @cjphs
-
 # Returns true if any estimator was nudged. False -> All labels are okay
 def nudge_estimators(estimator_points:list[Point], label_points:list[Point], phi:float, pull:bool=True, push:bool=True):
     N = len(estimator_points)*2
@@ -14,8 +12,6 @@ def nudge_estimators(estimator_points:list[Point], label_points:list[Point], phi
         closest_estimator = label_point.closest_point_in_list(estimator_points)
         vertex_point = Point(label_point.origin_point_x, label_point.origin_point_y, label=label_point.label)
         
-        # Want to push closest_estimator away from label_point
-        # Pull label_point's regione estimator closer to label point...
         if closest_estimator.label != label_point.label:
 
             label_point_region_estimator_point = get_region_estimator_point(estimator_points, label_point.label)
@@ -35,11 +31,6 @@ def nudge_estimators(estimator_points:list[Point], label_points:list[Point], phi
             label_point.plot_element[0].set_markerfacecolor('lime')
             label_point.satisfied = True
 
-    # debug print nudges
-    # s = ''
-    # for n in nudge:
-    #     s += str(n)
-    # print(s)
 
     for estimator_point in estimator_points:
         estimator_point.x += nudge[estimator_point.label].x

@@ -45,8 +45,6 @@ class Diagram:
         self.regions = vor.regions
 
     def plot(self):
-        for v in self.vertices:
-            v.plot_element = plt.plot(v.x, v.y, 'bo')
         for r in self.regions:
             for i in range(len(r)):
                 if r[i] == -1 or r[(i+1)%len(r)] == -1:

@@ -27,6 +27,7 @@ class Point:
     
     def __add__(self, other):
         return Point(self.x + other.x, self.y + other.y, self.label)
+    
 
     def __mul__(self, value):
         return Point(self.x * value, self.y * value, self.label)

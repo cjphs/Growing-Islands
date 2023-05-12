@@ -18,23 +18,32 @@ class VoronoiApproximation:
         self.phi = phi
 
         self.gui = gui
-
+        
+        self.done = False
         self.label_points, self.estimator_points = generate_label_points(diagram, omega)
 
+
+    def on_press(self, event):
+        print(event.key)
+        sys.stdout.flush()
+        if event.key == 'x':
+            self.done = True
 
     def do_thingy(self, margin=1):
         iterations = 0
         self.points_satisfied = []
         begin = datetime.now()
 
-        done = False
-        while(not done):
+        plt.gcf().canvas.mpl_connect('key_press_event', self.on_press)
+
+        self.done = False
+        while(not self.done):
             nudged = nudge_estimators(self.estimator_points, self.label_points, self.phi, pull=True, push=True)
             iterations += 1
 
             if not nudged:
                 plt.title(label="All label points satisfied!")
-                done = True
+                self.done = True
 
             if self.gui:
                 for p in self.estimator_points:
@@ -48,7 +57,7 @@ class VoronoiApproximation:
             satisfied_percentage = satisfied_count/len(self.label_points)
 
             if satisfied_percentage >= margin:
-                done = True
+                self.done = True
 
             self.points_satisfied.append(satisfied_percentage)
 

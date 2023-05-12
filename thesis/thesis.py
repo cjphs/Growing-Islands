@@ -19,11 +19,6 @@ def enforce_plot_scale(xmin,xmax,ymin,ymax):
     ax.set_xlim([xmin, xmax])
     ax.set_ylim([ymin, ymax])
 
-def on_press(event):
-    global done
-    sys.stdout.flush()
-    if event.key == 'x':
-        done = True
 
 def get_arg(args, arg_name):
     if arg_name in args:
@@ -33,10 +28,10 @@ def get_arg(args, arg_name):
 def main():
     gui = True
 
-    omega   = .995
-    phi     = .0002
+    omega   = .98
+    phi     = .0005
 
-    margin = .95
+    margin = 1.0
 
     num_points = 50
 
@@ -97,7 +92,6 @@ def main():
         plt.title(label="Centroid approximation")
         plt.waitforbuttonpress(0)
 
-        plt.gcf().canvas.mpl_connect('key_press_event', on_press)
         plt.title(label="Nudging generator approximations...")
 
     approximation.do_thingy(margin=margin)
@@ -106,10 +100,14 @@ def main():
     new_vor = voronoi_from_points(approximation.estimator_points)
     voronoi_plot_2d(new_vor, ax=plt.gca(), line_alpha=.5, line_colors='blue')
     enforce_plot_scale(xmin,xmax,ymin,ymax)
+    plt.pause(1e-10)
 
     plt.figure()
     plt.plot(approximation.points_satisfied, color='black')
     plt.title(label="Percentage of label points satisfied over time")
+    plt.ylim([0, 1])
+    plt.ylabel("% Satisfied label points")
+    plt.xlabel("Time step")
 
     plt.pause(1e-10)
     plt.show()
