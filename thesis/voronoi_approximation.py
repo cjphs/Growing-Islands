@@ -7,10 +7,12 @@ import os
 from datetime import datetime
 from math import floor
 
+from geometry.diagram import Diagram
+
 
 class VoronoiApproximation:
 
-    def __init__(self, diagram, omega, phi, gui=False):
+    def __init__(self, diagram:Diagram, omega:float, phi:float, gui:bool=False):
         self.diagram = diagram
         self.omega = omega
         self.phi = phi

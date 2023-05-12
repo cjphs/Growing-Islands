@@ -12,6 +12,8 @@ import os
 
 from datetime import datetime
 
+from geometry.diagram import Diagram
+
 def enforce_plot_scale(xmin,xmax,ymin,ymax):
     ax = plt.gca()
     ax.set_xlim([xmin, xmax])
@@ -62,15 +64,25 @@ def main():
 
     vor = generate_random_voronoi(num_points,xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax)
 
+
+    #diagram = Diagram(txt_file="test.txt")
+    diagram = Diagram(voronoi=vor)
+    diagram.save_to_txt(f"{datetime.now().strftime(f'%H-%M-%S_{num_points}_{omega}')}.txt")
+
     # Plot the original input diagram
     if gui:
-        plt.figure()
-        voronoi_plot_2d(vor, ax=plt.gca(), line_width=.5,  show_points=show_input_generators, show_vertices=False)
+    
+        plt.figure()    
+        
+        for p in vor.points:
+            plt.plot(p[0], p[1], "bx", alpha=.5)
+            
+        diagram.plot()
         enforce_plot_scale(xmin,xmax,ymin,ymax)
         plt.title(label="Input diagram")
         plt.waitforbuttonpress(0)
 
-    approximation = VoronoiApproximation(vor, omega, phi, gui=gui)
+    approximation = VoronoiApproximation(diagram, omega, phi, gui=gui)
 
     original_approximation = voronoi_from_points(approximation.estimator_points)
 
