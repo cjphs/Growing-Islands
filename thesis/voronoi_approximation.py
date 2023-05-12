@@ -29,12 +29,15 @@ class VoronoiApproximation:
         if event.key == 'x':
             self.done = True
 
+
     def do_thingy(self, margin=1):
         iterations = 0
         self.points_satisfied = []
         begin = datetime.now()
 
         plt.gcf().canvas.mpl_connect('key_press_event', self.on_press)
+
+        original_phi = self.phi
 
         self.done = False
         while(not self.done):
@@ -49,12 +52,20 @@ class VoronoiApproximation:
                 for p in self.estimator_points:
                     p.update_plot()
 
+                    if self.diagram.point_inside_region(p, p.label):
+                        p.plot_element[0].set_markerfacecolor('b')
+                    else:
+                        p.plot_element[0].set_markerfacecolor('aqua')
+
+
             satisfied_count = 0
             for l in self.label_points:
                 if l.satisfied:
                     satisfied_count += 1
 
             satisfied_percentage = satisfied_count/len(self.label_points)
+
+            self.phi = original_phi * (1-satisfied_percentage)
 
             if satisfied_percentage >= margin:
                 self.done = True

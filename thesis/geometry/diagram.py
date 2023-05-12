@@ -1,16 +1,31 @@
 from geometry.point import Point
 from matplotlib import pyplot as plt
 
+from scipy.spatial import Voronoi
+
+from math import atan2, pi
+
 class Diagram:
-    def __init__(self, vertices:list[Point] = [], edges:list[list[int]] = [], regions:list = [], voronoi=None, txt_file:str = None):
+    def __init__(
+            self, 
+            vertices:list[Point] = [],
+            regions:list = [], 
+            voronoi:Voronoi=None, 
+            txt_file:str = None
+        ):
+
         self.vertices = vertices
         self.regions = regions
+
+        if voronoi is not None and txt_file is not None:
+            raise("Diagram can only be voronoi or txt_file, but not both!")
 
         if voronoi is not None:
             self.load_from_scipy_voronoi(voronoi)
         elif txt_file is not None:
             self.load_from_txt(txt_file)
-    
+
+
     def save_to_txt(self, txt_file:str):
         with open(txt_file, "w") as f:
             for v in self.vertices:
@@ -19,6 +34,7 @@ class Diagram:
                 for i in r:
                     f.write(f"{i} ")
                 f.write("\n")
+
 
     def load_from_txt(self, txt_file:str):
         with open(txt_file, "r") as f:
@@ -40,9 +56,11 @@ class Diagram:
 
         print(f"Loaded {len(self.vertices)} vertices and {len(self.regions)} regions from {txt_file}.")
 
+
     def load_from_scipy_voronoi(self, vor):
         self.vertices = [Point(v[0], v[1]) for v in vor.vertices]
         self.regions = vor.regions
+
 
     def plot(self):
         for r in self.regions:

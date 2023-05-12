@@ -8,8 +8,6 @@ from voronoi_approximation import VoronoiApproximation
 from preprocessing import generate_label_points
 import sys
 
-import os
-
 from datetime import datetime
 
 from geometry.diagram import Diagram
@@ -55,10 +53,8 @@ def main():
     xmin,xmax = 0,1
     ymin,ymax = 0,1
 
-    show_input_generators = True
 
     vor = generate_random_voronoi(num_points,xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax)
-
 
     #diagram = Diagram(txt_file="in/test.txt")
     diagram = Diagram(voronoi=vor)
@@ -95,6 +91,9 @@ def main():
         plt.title(label="Nudging generator approximations...")
 
     approximation.do_thingy(margin=margin)
+
+    if not gui:
+        diagram.plot()
 
     # generate new voronoi diagram from final estimator point positions
     new_vor = voronoi_from_points(approximation.estimator_points)
