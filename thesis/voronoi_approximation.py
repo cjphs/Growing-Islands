@@ -8,11 +8,14 @@ from datetime import datetime
 from math import floor
 
 from geometry.diagram import Diagram
+from geometry.point import Point
+
+from helper_funcs import clamp
 
 
 class VoronoiApproximation:
 
-    def __init__(self, diagram:Diagram, omega:float, phi:float, gui:bool=False):
+    def __init__(self, diagram:Diagram, omega:float, phi:float, gui:bool=False, clamp_to_diagram:bool=True):
         self.diagram = diagram
         self.omega = omega
         self.phi = phi
@@ -22,20 +25,26 @@ class VoronoiApproximation:
         self.done = False
         self.label_points, self.estimator_points = generate_label_points(diagram, omega)
 
+        if clamp_to_diagram:
+            for p in self.estimator_points:
+                p.x = clamp(p.x, self.diagram.xmin, self.diagram.xmax)
+                p.y = clamp(p.y, self.diagram.ymin, self.diagram.ymax)
 
-    def on_press(self, event):
+
+    def on_press(self, event) -> None:
         print(event.key)
         sys.stdout.flush()
         if event.key == 'x':
             self.done = True
 
 
-    def do_thingy(self, margin=1):
+    def do_thingy(self, margin:float=1) -> list[Point]:
         iterations = 0
         self.points_satisfied = []
         begin = datetime.now()
 
-        plt.gcf().canvas.mpl_connect('key_press_event', self.on_press)
+        if self.gui:
+            plt.gcf().canvas.mpl_connect('key_press_event', self.on_press)
 
         original_phi = self.phi
 
