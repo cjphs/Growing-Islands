@@ -11,11 +11,18 @@ class Diagram:
             vertices:list[Point] = [],
             regions:list = [], 
             voronoi:Voronoi=None, 
-            txt_file:str = None
+            txt_file:str=None,
+            xmin:float=0,
+            xmax:float=1,
+            ymin:float=0,
+            ymax:float=1
         ):
 
         self.vertices = vertices
         self.regions = regions
+
+        self.xmin, self.xmax = xmin, xmax
+        self.ymin, self.ymax = ymin, ymax
 
         if voronoi is not None and txt_file is not None:
             raise("Diagram can only be voronoi or txt_file, but not both!")
@@ -24,6 +31,10 @@ class Diagram:
             self.load_from_scipy_voronoi(voronoi)
         elif txt_file is not None:
             self.load_from_txt(txt_file)
+
+
+    def point_inside_region(self, point:Point, region_index:int) -> bool:
+        return True
 
 
     def save_to_txt(self, txt_file:str):

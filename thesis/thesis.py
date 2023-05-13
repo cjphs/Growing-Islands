@@ -62,7 +62,6 @@ def main():
 
     # Plot the original input diagram
     if gui:
-    
         plt.figure()    
         
         for p in vor.points:
@@ -73,15 +72,12 @@ def main():
         plt.title(label="Input diagram")
         plt.waitforbuttonpress(0)
 
-    approximation = VoronoiApproximation(diagram, omega, phi, gui=gui)
 
+    approximation = VoronoiApproximation(diagram, omega, phi, gui=gui)
     original_approximation = voronoi_from_points(approximation.estimator_points)
 
     if gui:
-        for p in approximation.estimator_points:
-            plt.plot(p.x, p.y, "b+", alpha=.2)
-            p.x = min(max(p.x, xmin), xmax)
-            p.y = min(max(p.y, ymin), ymax)
+        enforce_plot_scale(xmin,xmax,ymin,ymax)
 
         voronoi_plot_2d(original_approximation, line_colors='orange', line_alpha=0.2, ax=plt.gca(), show_points=False, show_vertices=False)
         enforce_plot_scale(xmin,xmax,ymin,ymax)
