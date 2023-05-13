@@ -23,16 +23,7 @@ def get_arg(args, arg_name):
         return args[args.index(arg_name) + 1]
     return None
 
-def main():
-    gui = True
-
-    omega   = .98
-    phi     = .0005
-
-    margin = 1.0
-
-    num_points = 50
-
+def parse_args(omega, phi, num_points, gui):
     num = get_arg(sys.argv, "--num_points")
     if num != None:
         num_points = int(num)
@@ -49,16 +40,39 @@ def main():
     ma = get_arg(sys.argv, "--margin")
     if ma != None:
         margin = float(ma)
+    return omega, phi, num_points, gui
+
+def main():
+    gui = True
+
+    omega   = .98
+    phi     = .0005
+
+    margin = 1.0
+
+    num_points = 50
 
     xmin,xmax = 0,1
     ymin,ymax = 0,1
 
+    omega, phi, num_points, gui = parse_args(omega, phi, num_points, gui)
 
-    vor = generate_random_voronoi(num_points,xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax)
+    load_from_file = ""
 
-    #diagram = Diagram(txt_file="in/test.txt")
-    diagram = Diagram(voronoi=vor)
-    diagram.save_to_txt(f"in/{datetime.now().strftime(f'%H-%M-%S_{num_points}_{omega}')}.txt")
+    if load_from_file == "":
+        vor = generate_random_voronoi(num_points,
+                                      xmin=xmin,
+                                      xmax=xmax,
+                                      ymin=ymin,
+                                      ymax=ymax
+                                      )
+
+        diagram = Diagram(voronoi=vor)
+
+        filename = f"in/{datetime.now().strftime(f'%H-%M-%S_{num_points}_{omega}')}.txt"
+        diagram.save_to_txt(f"{filename}")
+    else:
+        diagram = Diagram(txt_file=load_from_file)
 
     # Plot the original input diagram
     if gui:
@@ -79,7 +93,14 @@ def main():
     if gui:
         enforce_plot_scale(xmin,xmax,ymin,ymax)
 
-        voronoi_plot_2d(original_approximation, line_colors='orange', line_alpha=0.2, ax=plt.gca(), show_points=False, show_vertices=False)
+        voronoi_plot_2d(
+            original_approximation,
+            line_colors='orange',
+            line_alpha=0.2,
+            ax=plt.gca(),
+            show_points=False,
+            show_vertices=False
+        )
         enforce_plot_scale(xmin,xmax,ymin,ymax)
         plt.title(label="Centroid approximation")
         plt.waitforbuttonpress(0)
