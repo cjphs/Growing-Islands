@@ -3,8 +3,6 @@ from matplotlib import pyplot as plt
 
 from scipy.spatial import Voronoi
 
-from math import atan2, pi
-
 class Diagram:
     def __init__(
             self, 
@@ -32,10 +30,8 @@ class Diagram:
         elif txt_file is not None:
             self.load_from_txt(txt_file)
 
-
     def point_inside_region(self, point:Point, region_index:int) -> bool:
         return True
-
 
     def save_to_txt(self, txt_file:str):
         with open(txt_file, "w") as f:
@@ -45,7 +41,6 @@ class Diagram:
                 for i in r:
                     f.write(f"{i} ")
                 f.write("\n")
-
 
     def load_from_txt(self, txt_file:str):
         with open(txt_file, "r") as f:
@@ -67,11 +62,9 @@ class Diagram:
 
         print(f"Loaded {len(self.vertices)} vertices and {len(self.regions)} regions from {txt_file}.")
 
-
     def load_from_scipy_voronoi(self, vor):
         self.vertices = [Point(v[0], v[1]) for v in vor.vertices]
         self.regions = vor.regions
-
 
     def plot(self):
         for r in self.regions:
