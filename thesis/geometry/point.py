@@ -10,7 +10,6 @@ class Point:
 
         self.satisfied = False
 
-
     def distance(self, other):
         if type(other) == Point:
             return sqrt((other.x - self.x)**2 + (other.y - self.y)**2)
@@ -24,14 +23,13 @@ class Point:
         dy = (other.y - self.y) / dist
 
         return Point(dx, dy)
-    
+
     def __add__(self, other):
         return Point(self.x + other.x, self.y + other.y, self.label)
-    
 
     def __mul__(self, value):
         return Point(self.x * value, self.y * value, self.label)
-    
+
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
 
@@ -56,10 +54,8 @@ class Point:
     def plot(self, style='co'):
         plt.plot(self.x, self.y, style)
 
-
     def update_plot(self):
         self.plot_element[0].set_data([self.x], [self.y])
-
     
     def __str__(self):
         return f"({self.x}, {self.y}, L = {self.label})"

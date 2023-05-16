@@ -1,22 +1,17 @@
-from matplotlib import pyplot as plt
-from scipy.spatial import voronoi_plot_2d
-
-from input_generation.voronoi_funcs import generate_random_voronoi, voronoi_from_points
-
-from voronoi_approximation import VoronoiApproximation
-
-from preprocessing import generate_label_points
 import sys
 
 from datetime import datetime
 
 from geometry.diagram import Diagram
+from input_generation.voronoi_funcs import generate_random_voronoi, voronoi_from_points
+from matplotlib import pyplot as plt
+from scipy.spatial import voronoi_plot_2d
+from voronoi_approximation import VoronoiApproximation
 
 def enforce_plot_scale(xmin,xmax,ymin,ymax):
     ax = plt.gca()
     ax.set_xlim([xmin, xmax])
     ax.set_ylim([ymin, ymax])
-
 
 def get_arg(args, arg_name):
     if arg_name in args:
