@@ -7,7 +7,7 @@ def nudge_estimators(
         label_points:list[Point],
         phi:float,
         pull:bool=True,
-        push:bool=True
+        push:bool=False
     ):
     
     N = len(estimator_points)*2
