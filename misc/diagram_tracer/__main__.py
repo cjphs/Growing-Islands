@@ -29,8 +29,6 @@ regions = []
 
 current_region = []
 
-linemode_first = None
-
 mouse_x = 0
 mouse_y = 0
 
@@ -102,9 +100,18 @@ while not done:
         pygame.draw.circle(screen, col, [point.x, point.y], 5)
 
     for r in regions:
+        p = []
         for i in range(len(r)):
             j = (i+1) % len(r)
             pygame.draw.line(screen, BLACK, [r[i].x, r[i].y], [r[j].x, r[j].y], 2)
+
+            p.append((r[i].x, r[i].y))
+
+        poly_surf = pygame.Surface(size, pygame.SRCALPHA)
+        poly_surf.set_alpha(64)
+        pygame.draw.polygon(poly_surf, RED, tuple(p))
+        screen.blit(poly_surf, (0, 0))
+        
 
     if len(current_region) > 0:
         for i in range(len(current_region) - 1):
