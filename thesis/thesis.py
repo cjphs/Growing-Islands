@@ -123,6 +123,5 @@ def main():
     plt.pause(1e-10)
     plt.show()
 
-
 if __name__ == "__main__":
     main()
