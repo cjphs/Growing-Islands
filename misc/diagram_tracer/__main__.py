@@ -8,7 +8,7 @@ YELLOW = (255,255,0)
 
 pygame.init()
  
-size = (500, 500)
+size = (600, 600)
 screen = pygame.display.set_mode(size)
  
 pygame.display.set_caption("Tessellation tracer")
@@ -41,7 +41,7 @@ def save_diagram(points, regions):
     file = open("./misc/diagram_tracer/diagram.txt", "w")
 
     for p in points:
-        file.write(f"{p.x} {p.y}\n")
+        file.write(f"{(p.x - 50)/500} {(p.y - 50)/500}\n")
 
     for r in regions:
         for p in r:
@@ -60,7 +60,8 @@ while not done:
             # Create new point
             if event.button == 1:
                 pos = pygame.mouse.get_pos()
-                points.append(Point(pos[0], pos[1]))
+                x,y = pos[0], pos[1]
+                points.append(Point(x, y))
 
             # Add line connections
             if event.button == 3:
@@ -91,7 +92,7 @@ while not done:
  
     screen.fill(WHITE)
 
-    screen.blit(input_image, (0, 0))
+    screen.blit(input_image, (50, 50))
 
     for point in points:
         col = BLACK
@@ -101,6 +102,8 @@ while not done:
 
     for r in regions:
         p = []
+        center_x = 0
+        center_y = 0
         for i in range(len(r)):
             j = (i+1) % len(r)
             pygame.draw.line(screen, BLACK, [r[i].x, r[i].y], [r[j].x, r[j].y], 2)
