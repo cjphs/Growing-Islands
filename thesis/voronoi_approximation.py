@@ -1,6 +1,6 @@
 from matplotlib import pyplot as plt
 from nudging import nudge_estimators
-from preprocessing import generate_label_points
+from preprocessing import generate_estimator_points, generate_label_points
 
 import sys
 import os
@@ -23,7 +23,8 @@ class VoronoiApproximation:
         self.gui = gui
         
         self.done = False
-        self.label_points, self.estimator_points = generate_label_points(diagram, omega)
+        self.label_points = generate_label_points(diagram, omega)
+        self.estimator_points = generate_estimator_points(diagram)
 
         if clamp_to_diagram:
             for p in self.estimator_points:
@@ -50,7 +51,14 @@ class VoronoiApproximation:
 
         self.done = False
         while(not self.done):
-            nudged = nudge_estimators(self.estimator_points, self.label_points, self.phi, pull=True, push=True)
+            nudged = nudge_estimators(
+                self.estimator_points, 
+                self.label_points, 
+                self.phi, 
+                pull=True, 
+                push=True, 
+                diagram=self.diagram
+            )
             iterations += 1
 
             if not nudged:
