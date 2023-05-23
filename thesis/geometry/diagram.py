@@ -31,6 +31,34 @@ class Diagram:
             self.load_from_txt(txt_file)
 
     def point_inside_region(self, point:Point, region_index:int) -> bool:
+        region = self.regions[region_index]
+        
+        pos = 0
+        neg = 0
+
+        for i in range(len(region)):
+            j = (i+1)%len(region)
+            e1 = self.vertices[region[i]]
+            e2 = self.vertices[region[j]]
+
+            x1, y1 = e1.x, e1.y
+            x2, y2 = e2.x, e2.y
+
+            if point.x == x1 and point.y == y1:
+                return True
+
+            #Compute the cross product
+            d = (point.x - x1)*(y2 - y1) - (point.y - y1)*(x2 - x1)
+
+            if (d > 0):
+                pos += 1
+            if (d < 0):
+                neg += 1
+
+            # If the sign changes, then point is outside
+            if (pos > 0 and neg > 0):
+                return False
+            
         return True
 
     def save_to_txt(self, txt_file:str):
@@ -74,3 +102,4 @@ class Diagram:
                 v1 = self.vertices[r[i]]
                 v2 = self.vertices[r[(i+1)%len(r)]]
                 plt.plot([v1.x, v2.x], [v1.y, v2.y], '-', linewidth=.5, color='black')
+                plt.text(x=(v1.x+v2.x)/2, y=(v1.y+v2.y)/2, s=f"{self.regions.index(r)}", fontsize=6)
