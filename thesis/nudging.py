@@ -7,7 +7,8 @@ def nudge_estimators(
         label_points:list[Point],
         phi:float,
         pull:bool=True,
-        push:bool=False
+        push:bool=False,
+        diagram=None
     ):
     
     N = len(estimator_points)*2
@@ -41,7 +42,13 @@ def nudge_estimators(
 
 
     for estimator_point in estimator_points:
-        estimator_point.x += nudge[estimator_point.label].x
-        estimator_point.y += nudge[estimator_point.label].y
+        test_point = Point(
+            estimator_point.x + nudge[estimator_point.label].x,
+            estimator_point.y + nudge[estimator_point.label].y
+        )
+
+        if diagram.point_inside_region(test_point, estimator_point.label):
+            estimator_point.x = test_point.x
+            estimator_point.y = test_point.y
 
     return points_nudged
