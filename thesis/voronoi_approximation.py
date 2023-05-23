@@ -50,7 +50,14 @@ class VoronoiApproximation:
 
         self.done = False
         while(not self.done):
-            nudged = nudge_estimators(self.estimator_points, self.label_points, self.phi, pull=True, push=True)
+            nudged = nudge_estimators(
+                self.estimator_points, 
+                self.label_points, 
+                self.phi, 
+                pull=True, 
+                push=True, 
+                diagram=self.diagram
+            )
             iterations += 1
 
             if not nudged:
