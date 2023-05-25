@@ -40,7 +40,7 @@ def parse_args(phi, num_points, gui):
 def main():
     gui = False
 
-    phi     = .001
+    phi = .001
 
     margin = .975
 
@@ -73,9 +73,6 @@ def main():
     # Plot the original input diagram
     if gui:
         plt.figure()    
-        
-        #for p in vor.points:
-            #plt.plot(p[0], p[1], "o", alpha=1, color="black")
             
         diagram.plot()
         enforce_plot_scale(xmin,xmax,ymin,ymax)
@@ -83,29 +80,23 @@ def main():
         plt.waitforbuttonpress(0)
 
 
-    approximation = VoronoiApproximation(diagram, phi, gui=gui)
+    approximation = VoronoiApproximation(diagram, gui=gui)
     original_approximation = voronoi_from_points(approximation.estimator_points)
 
     if gui:
         enforce_plot_scale(xmin,xmax,ymin,ymax)
-
-        #voronoi_plot_2d(
-        #    original_approximation,
-        #    line_colors='orange',
-        #    line_alpha=0.2,
-        #    ax=plt.gca(),
-        #    show_points=False,
-        #    show_vertices=False
-        #)
         enforce_plot_scale(xmin,xmax,ymin,ymax)
-        plt.title(label="Centroid approximation")
-        plt.waitforbuttonpress(0)
-
         plt.title(label="Nudging generator approximations...")
 
-    approximation.do_thingy(margin=margin)
+    approximation.do_thingy(
+        phi=phi, 
+        iterations_before_reduction=100, 
+        omega_reduction=.05, 
+        margin=margin
+    )
 
-    print(approximation.omega)
+
+    print(f"Lower bound for omega: {approximation.omega}")
 
     if not gui:
         diagram.plot()

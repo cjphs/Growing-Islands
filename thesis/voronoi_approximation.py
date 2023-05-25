@@ -15,9 +15,8 @@ from helper_funcs import clamp
 
 class VoronoiApproximation:
 
-    def __init__(self, diagram:Diagram, phi:float, gui:bool=False, clamp_to_diagram:bool=True):
+    def __init__(self, diagram:Diagram, gui:bool=False, clamp_to_diagram:bool=True):
         self.diagram = diagram
-        self.phi = phi
 
         self.gui = gui
         self.print_progress = True
@@ -25,7 +24,7 @@ class VoronoiApproximation:
         self.omega = 1
         self.done = False
         
-        self.estimator_points = generate_estimator_points(diagram)
+        self.estimator_points = generate_estimator_points(diagram, gui=gui)
 
         if clamp_to_diagram:
             for p in self.estimator_points:
@@ -40,18 +39,24 @@ class VoronoiApproximation:
             self.done = True
 
 
-    def do_thingy(self, margin:float=1) -> list[Point]:
+    def do_thingy(
+            self, 
+            phi:float=.005, 
+            iterations_before_reduction:int=100, 
+            omega_reduction:float=.05, 
+            margin:float=1
+        ) -> list[Point]:
+
         begin = datetime.now()
         self.points_satisfied = []
 
         if self.gui:
             plt.gcf().canvas.mpl_connect('key_press_event', self.on_press)
-
-        original_phi = self.phi
         
         highest_satisfied_count = 0
         iterations_since_highest = 0
-        stop_after_iterations_without_improvement = 100
+
+        original_phi = phi
 
         self.done = False
         all_labels_satisfied = False
@@ -66,7 +71,7 @@ class VoronoiApproximation:
                 nudged, satisfied_count = nudge_estimators(
                     self.estimator_points, 
                     label_points, 
-                    self.phi, 
+                    phi, 
                     pull=True, 
                     push=True, 
                     diagram=self.diagram,
@@ -82,13 +87,13 @@ class VoronoiApproximation:
                     iterations_since_highest = 0
                 else:
                     iterations_since_highest += 1
-                    if iterations_since_highest >= stop_after_iterations_without_improvement:
+                    if iterations_since_highest >= iterations_before_reduction:
                         self.done = True
 
                 satisfied_percentage = satisfied_count/len(label_points)
 
                 # Dampen phi
-                self.phi = original_phi * (1-satisfied_percentage)
+                phi = original_phi * (1-satisfied_percentage)
 
                 if satisfied_percentage >= margin:
                     all_labels_satisfied = True
@@ -113,11 +118,15 @@ class VoronoiApproximation:
                             p.plot_element[0].set_markerfacecolor('b')
                         else:
                             p.plot_element[0].set_markerfacecolor('aqua')
+
                     plt.pause(1e-10)
 
             if not all_labels_satisfied:
-                self.omega -= .05
-                print(self.omega)
+                if self.gui:
+                    for l in label_points:
+                            l.plot_element[0].remove()
+
+                self.omega -= omega_reduction
                 self.label_points = generate_label_points(self.diagram, self.omega)
                 self.done = False
 
