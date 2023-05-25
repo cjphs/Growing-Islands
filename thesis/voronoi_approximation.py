@@ -1,6 +1,7 @@
 from matplotlib import pyplot as plt
 from nudging import nudge_estimators
 from preprocessing import generate_estimator_points, generate_label_points
+from input_generation.voronoi_funcs import voronoi_from_points
 
 import sys
 import os
@@ -11,6 +12,8 @@ from geometry.diagram import Diagram
 from geometry.point import Point
 
 from helper_funcs import clamp
+
+from scipy.spatial import voronoi_plot_2d
 
 
 class VoronoiApproximation:
@@ -79,6 +82,14 @@ class VoronoiApproximation:
                 )
                 iterations += 1
 
+                # vor = voronoi_from_points(self.estimator_points)
+                # ax = plt.gca()
+                # ax.set_xlim([0, 1])
+                # ax.set_ylim([0, 1])
+                # f = voronoi_plot_2d(vor, ax=ax, show_points=False, show_vertices=False)
+                # f.savefig(f"vor_gif/voronoi_{iterations}.png")
+                # plt.close(f)
+
                 if not nudged:
                     self.done = True
 
@@ -94,6 +105,8 @@ class VoronoiApproximation:
 
                 # Dampen phi
                 phi = original_phi * (1-satisfied_percentage)
+                # Dampen phi with iterations
+                #phi = original_phi * (1-satisfied_percentage) * (1 - iterations_since_highest/iterations_before_reduction)
 
                 if satisfied_percentage >= margin:
                     all_labels_satisfied = True
