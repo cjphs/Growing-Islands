@@ -1,13 +1,13 @@
-V = [0, 2, 6, 10, 20, 22]
+V = [0, 2, 6, 10, 18, 20]
 
 C = [1, 4, 8, 15, 21]
 
 def f(v_0, v_1, v_2, v_3):
-    top = (- v_0 - v_1 + v_2 + v_3)
+    top = (v_3 - v_0)
     bottom = v_2 - v_1
     print(f"{top} / {bottom}")
 
-    return (top/bottom)/4
+    return (top/bottom)/2
 
 omega = 999999
 for i in range(1, len(V)-2):
