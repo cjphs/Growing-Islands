@@ -102,4 +102,3 @@ class Diagram:
                 v1 = self.vertices[r[i]]
                 v2 = self.vertices[r[(i+1)%len(r)]]
                 plt.plot([v1.x, v2.x], [v1.y, v2.y], '-', linewidth=.5, color='black')
-                plt.text(x=(v1.x+v2.x)/2, y=(v1.y+v2.y)/2, s=f"{self.regions.index(r)}", fontsize=6)

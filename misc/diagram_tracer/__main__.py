@@ -35,10 +35,10 @@ mouse_y = 0
 fps = 60
 point_click_distance = 15
 
-input_image = pygame.image.load("./misc/diagram_tracer/honeycomb.png")
+input_image = pygame.image.load("./misc/diagram_tracer/luxembourg.png")
  
 def save_diagram(points, regions):
-    file = open("./misc/diagram_tracer/diagram.txt", "w")
+    file = open("./misc/diagram_tracer/diagram_luxembourg.txt", "w")
 
     for p in points:
         file.write(f"{(p.x - 50)/500} {(p.y - 50)/500}\n")

@@ -18,7 +18,7 @@ def get_arg(args, arg_name):
         return args[args.index(arg_name) + 1]
     return None
 
-def parse_args(omega, phi, num_points, gui):
+def parse_args(phi, num_points, gui):
     num = get_arg(sys.argv, "--num_points")
     if num != None:
         num_points = int(num)
@@ -35,24 +35,25 @@ def parse_args(omega, phi, num_points, gui):
     ma = get_arg(sys.argv, "--margin")
     if ma != None:
         margin = float(ma)
-    return omega, phi, num_points, gui
+    return phi, num_points, gui
 
 def main():
-    gui = True
+    gui = False
 
-    omega   = .98
-    phi     = .0005
+    phi     = .001
 
-    margin = 1.0
+    margin = .975
 
     num_points = 50
 
     xmin,xmax = 0,1
     ymin,ymax = 0,1
 
-    omega, phi, num_points, gui = parse_args(omega, phi, num_points, gui)
+    phi, num_points, gui = parse_args(phi, num_points, gui)
 
     load_from_file = ""
+    #load_from_file = "in/diagram_luxembourg.txt"
+    #load_from_file = "in/23-53-05_30_0.005.txt"
 
     if load_from_file == "":
         vor = generate_random_voronoi(num_points,
@@ -64,7 +65,7 @@ def main():
 
         diagram = Diagram(voronoi=vor)
 
-        filename = f"in/{datetime.now().strftime(f'%H-%M-%S_{num_points}_{omega}')}.txt"
+        filename = f"in/{datetime.now().strftime(f'%H-%M-%S_{num_points}_{phi}')}.txt"
         diagram.save_to_txt(f"{filename}")
     else:
         diagram = Diagram(txt_file=load_from_file)
@@ -73,8 +74,8 @@ def main():
     if gui:
         plt.figure()    
         
-        for p in vor.points:
-            plt.plot(p[0], p[1], "bx", alpha=.5)
+        #for p in vor.points:
+            #plt.plot(p[0], p[1], "o", alpha=1, color="black")
             
         diagram.plot()
         enforce_plot_scale(xmin,xmax,ymin,ymax)
@@ -82,20 +83,20 @@ def main():
         plt.waitforbuttonpress(0)
 
 
-    approximation = VoronoiApproximation(diagram, omega, phi, gui=gui)
+    approximation = VoronoiApproximation(diagram, phi, gui=gui)
     original_approximation = voronoi_from_points(approximation.estimator_points)
 
     if gui:
         enforce_plot_scale(xmin,xmax,ymin,ymax)
 
-        voronoi_plot_2d(
-            original_approximation,
-            line_colors='orange',
-            line_alpha=0.2,
-            ax=plt.gca(),
-            show_points=False,
-            show_vertices=False
-        )
+        #voronoi_plot_2d(
+        #    original_approximation,
+        #    line_colors='orange',
+        #    line_alpha=0.2,
+        #    ax=plt.gca(),
+        #    show_points=False,
+        #    show_vertices=False
+        #)
         enforce_plot_scale(xmin,xmax,ymin,ymax)
         plt.title(label="Centroid approximation")
         plt.waitforbuttonpress(0)
@@ -104,8 +105,18 @@ def main():
 
     approximation.do_thingy(margin=margin)
 
+    print(approximation.omega)
+
     if not gui:
         diagram.plot()
+        voronoi_plot_2d(
+           original_approximation,
+           line_colors='orange',
+           line_alpha=0.2,
+           ax=plt.gca(),
+           show_points=False,
+           show_vertices=False
+        )
 
     # generate new voronoi diagram from final estimator point positions
     new_vor = voronoi_from_points(approximation.estimator_points)

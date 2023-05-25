@@ -11,7 +11,7 @@ def get_region_estimator_point(estimator_points, region_label):
     return None
 
 
-def generate_estimator_points(diagram:Diagram) -> list[Point]:
+def generate_estimator_points(diagram:Diagram, gui:bool=False) -> list[Point]:
     estimator_points = []
 
     region_index = -1
@@ -31,13 +31,17 @@ def generate_estimator_points(diagram:Diagram) -> list[Point]:
             center_y += diagram.vertices[point].y
 
         center = Point(center_x/n, center_y/n, label=region_index)
-        center.plot_element = plt.plot(center.x, center.y, 'bo')
         estimator_points.append(center)
+        
+        if gui:
+            center.plot_element = plt.plot(center.x, center.y, 'bo')
+        else:
+            center.plot_element = None
     
     return estimator_points
 
 
-def generate_label_points(diagram:Diagram, omega:float) -> list:
+def generate_label_points(diagram:Diagram, omega:float, gui:bool=False) -> list:
 
     label_points = []
 
@@ -75,7 +79,11 @@ def generate_label_points(diagram:Diagram, omega:float) -> list:
             delta = center + center.direction_to(l) * center.distance(l) * omega
 
             l.set_position(delta.x, delta.y)
-            l.plot_element = plt.plot(delta.x, delta.y, 'ro')
+            
+            if gui:
+                l.plot_element = plt.plot(delta.x, delta.y, 'ro')
+            else:
+                l.plot_element = None
         
         label_points.extend(region_label_points)
     

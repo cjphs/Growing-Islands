@@ -15,15 +15,16 @@ from helper_funcs import clamp
 
 class VoronoiApproximation:
 
-    def __init__(self, diagram:Diagram, omega:float, phi:float, gui:bool=False, clamp_to_diagram:bool=True):
+    def __init__(self, diagram:Diagram, phi:float, gui:bool=False, clamp_to_diagram:bool=True):
         self.diagram = diagram
-        self.omega = omega
         self.phi = phi
 
         self.gui = gui
+        self.print_progress = True
         
+        self.omega = 1
         self.done = False
-        self.label_points = generate_label_points(diagram, omega)
+        
         self.estimator_points = generate_estimator_points(diagram)
 
         if clamp_to_diagram:
@@ -40,68 +41,85 @@ class VoronoiApproximation:
 
 
     def do_thingy(self, margin:float=1) -> list[Point]:
-        iterations = 0
-        self.points_satisfied = []
         begin = datetime.now()
+        self.points_satisfied = []
 
         if self.gui:
             plt.gcf().canvas.mpl_connect('key_press_event', self.on_press)
 
         original_phi = self.phi
+        
+        highest_satisfied_count = 0
+        iterations_since_highest = 0
+        stop_after_iterations_without_improvement = 100
 
         self.done = False
-        while(not self.done):
-            nudged = nudge_estimators(
-                self.estimator_points, 
-                self.label_points, 
-                self.phi, 
-                pull=True, 
-                push=True, 
-                diagram=self.diagram
-            )
-            iterations += 1
+        all_labels_satisfied = False
 
-            if not nudged:
-                plt.title(label="All label points satisfied!")
-                self.done = True
+        iterations = 0
 
-            if self.gui:
-                for p in self.estimator_points:
-                    p.update_plot()
+        while not all_labels_satisfied:
 
-                    if self.diagram.point_inside_region(p, p.label):
-                        p.plot_element[0].set_markerfacecolor('b')
-                    else:
-                        p.plot_element[0].set_markerfacecolor('aqua')
+            label_points = generate_label_points(self.diagram, self.omega, gui=self.gui)
 
+            while(not self.done):
+                nudged, satisfied_count = nudge_estimators(
+                    self.estimator_points, 
+                    label_points, 
+                    self.phi, 
+                    pull=True, 
+                    push=True, 
+                    diagram=self.diagram,
+                    gui=self.gui
+                )
+                iterations += 1
 
-            satisfied_count = 0
-            for l in self.label_points:
-                if l.satisfied:
-                    satisfied_count += 1
+                if not nudged:
+                    self.done = True
 
-            satisfied_percentage = satisfied_count/len(self.label_points)
+                if satisfied_count > highest_satisfied_count:
+                    highest_satisfied_count = satisfied_count
+                    iterations_since_highest = 0
+                else:
+                    iterations_since_highest += 1
+                    if iterations_since_highest >= stop_after_iterations_without_improvement:
+                        self.done = True
 
-            self.phi = original_phi * (1-satisfied_percentage)
+                satisfied_percentage = satisfied_count/len(label_points)
 
-            if satisfied_percentage >= margin:
-                self.done = True
+                # Dampen phi
+                self.phi = original_phi * (1-satisfied_percentage)
 
-            self.points_satisfied.append(satisfied_percentage)
+                if satisfied_percentage >= margin:
+                    all_labels_satisfied = True
+                    self.done = True
 
-            percent_bar_length = os.get_terminal_size().columns
+                self.points_satisfied.append(satisfied_percentage)
 
-            m = floor(satisfied_percentage * percent_bar_length)
+                # Print progress
+                if self.print_progress:
+                    percent_bar_length = os.get_terminal_size().columns
+                    m = floor(satisfied_percentage * percent_bar_length)
+                    percent_bar = m * "█" + (percent_bar_length - m) * "░"
+                    progress = f"{percent_bar}"
+                    sys.stdout.write("\r" + progress)
+                    sys.stdout.flush()
 
-            percent_bar = m * "█" + (percent_bar_length - m) * "░"
+                if self.gui:
+                    for p in self.estimator_points:
+                        p.update_plot()
 
-            progress = f"{percent_bar}"
+                        if self.diagram.point_inside_region(p, p.label):
+                            p.plot_element[0].set_markerfacecolor('b')
+                        else:
+                            p.plot_element[0].set_markerfacecolor('aqua')
+                    plt.pause(1e-10)
 
-            sys.stdout.write("\r" + progress)
-            sys.stdout.flush()
-
-            if self.gui:
-                plt.pause(1e-10)
+            if not all_labels_satisfied:
+                self.omega -= .05
+                print(self.omega)
+                self.label_points = generate_label_points(self.diagram, self.omega)
+                self.done = False
 
         end = datetime.now()
 
