@@ -42,6 +42,7 @@ def main():
 
     phi = .001
 
+    # margin < 1 yields better results in shorter time
     margin = .975
 
     num_points = 50
