@@ -79,15 +79,16 @@ def main():
         plt.title(label="Input diagram")
         plt.waitforbuttonpress(0)
 
-
+    ####################
+    # The main part... #
+    ####################
+    
     approximation = VoronoiApproximation(diagram, gui=gui)
+    
+    # Create Voronoi diagram from centroids to compare later on.
     original_approximation = voronoi_from_points(approximation.estimator_points)
 
-    if gui:
-        enforce_plot_scale(xmin,xmax,ymin,ymax)
-        enforce_plot_scale(xmin,xmax,ymin,ymax)
-        plt.title(label="Nudging generator approximations...")
-
+    # Run the approximation algorithm.
     approximation.do_thingy(
         phi=phi, 
         iterations_before_reduction=100, 
@@ -95,6 +96,9 @@ def main():
         margin=margin
     )
 
+    #########
+    # Done. #
+    #########
 
     print(f"Lower bound for omega: {approximation.omega}")
 
