@@ -53,8 +53,8 @@ def nudge_estimators(
             estimator_point.y + nudge[estimator_point.label].y
         )
 
-        if diagram.point_inside_region(test_point, estimator_point.label):
-            estimator_point.x = test_point.x
-            estimator_point.y = test_point.y
+        #if diagram.point_inside_region(test_point, estimator_point.label):
+        estimator_point.x = test_point.x
+        estimator_point.y = test_point.y
 
     return points_nudged, satisfied_count

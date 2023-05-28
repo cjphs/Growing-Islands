@@ -43,7 +43,7 @@ def main():
     phi = .001
 
     # margin < 1 yields better results in shorter time
-    margin = .975
+    margin = 1
 
     num_points = 50
 
@@ -55,6 +55,7 @@ def main():
     load_from_file = ""
     #load_from_file = "in/diagram_luxembourg.txt"
     #load_from_file = "in/23-53-05_30_0.005.txt"
+    load_from_file = "in/diagram_field2.txt"
 
     if load_from_file == "":
         vor = generate_random_voronoi(num_points,

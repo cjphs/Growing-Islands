@@ -1,48 +1,62 @@
-V = [0, 2, 6, 10, 18, 20]
+V = [0, 2, 6, 10, 20, 22]
 
-C = [1, 4, 8, 15, 21]
+P = [0.25, 2.05, 6.1, 19.9, 21]
 
-def f(v_0, v_1, v_2, v_3):
-    top = (v_3 - v_0)
-    bottom = v_2 - v_1
-    print(f"{top} / {bottom}")
+# p_0 = P_{i-1}, p_1 = P_i, p_2 = P_{i+1}
+# v_0 = V_{i}, v_1 = V_{i+1}
+def compute_omega_step(p_0, p_1, p_2, v_0, v_1):
+    c = (v_0 + v_1)/2
+    
+    omega_1 = (2*c - (p_0 + p_1))/(v_1 - v_0)
+    omega_2 = (p_1 + p_2 - 2*c)/(v_1 - v_0)
 
-    return (top/bottom)/2
+    print(f"omega_1 = {omega_1}, omega_2 = {omega_2}")
 
-omega = 999999
-for i in range(1, len(V)-2):
-    w = f(V[i-1], V[i], V[i+1], V[i+2])
-    print(w)
-    omega = min(omega, w)
+    return min(omega_1, omega_2)
 
-print(omega)
+
+def compute_omega(V, P):
+    omega = 999999
+    for i in range(1, len(V)-2):
+        w = compute_omega_step(P[i-1], P[i], P[i+1], V[i], V[i+1])
+        omega = min(omega, w)
+    
+    return omega
+
+
+omega = compute_omega(V, P)
+
+if omega < 0:
+    print("cringe ({omega} < 0, no solution)")
+else:
+    print(f"omega = {omega}")
+
 
 for i in range(0, len(V)-1):
     v = V[i]
     v_next = V[i+1]
 
-    c = C[i]
+    c = (v + v_next)/2
+
+    p = P[i]
 
     if i > 0:
-        c_prev = C[i-1]
+        p_prev = P[i-1]
     else:
-        c_prev = -999999
+        p_prev = -999999
 
-    if i < len(C)-1:
-        c_next = C[i+1]
+    if i < len(P)-1:
+        p_next = P[i+1]
     else:
-        c_next = 9999999
+        p_next = 9999999
 
     l1 = c - omega * (c - v)
     l2 = c + omega * (v_next - c)
 
-    a = (c - l1 <= l1 - c_prev)
-    b = (l2 - c <= c_next - l2)
+    a = (p - l1 <= l1 - p_prev)
+    b = (l2 - p <= p_next - l2)
 
     print()
-    print(f"{c_prev} |{v}|...{l1}  {c}  {l2}...|{v_next}| {c_next}")
-    print(f"{c-l1} {l1-c_prev} {a}")
-    print(f"{l2 - c} {c_next - l2} {b}")
-
-    print()
-    print()
+    print(f"{p_prev} |{v}|...{l1}  {p}  {l2}...|{v_next}| {p_next}")
+    print(f"{p-l1} {l1-p_prev} {a}")
+    print(f"{l2 - p} {p_next - l2} {b}")
