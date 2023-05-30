@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 
 from scipy.spatial import Voronoi
 
-class Diagram:
+class Tessellation:
     def __init__(
             self, 
             vertices:list[Point] = [],
@@ -16,8 +16,8 @@ class Diagram:
             ymax:float=1
         ):
 
-        self.vertices = vertices
         self.regions = regions
+        self.vertices = vertices
 
         self.xmin, self.xmax = xmin, xmax
         self.ymin, self.ymax = ymin, ymax

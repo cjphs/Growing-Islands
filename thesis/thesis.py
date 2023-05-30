@@ -2,7 +2,7 @@ import sys
 
 from datetime import datetime
 
-from geometry.diagram import Diagram
+from geometry.tessellation import Tessellation
 from input_generation.voronoi_funcs import generate_random_voronoi, voronoi_from_points
 from matplotlib import pyplot as plt
 from scipy.spatial import voronoi_plot_2d
@@ -55,7 +55,7 @@ def main():
     load_from_file = ""
     #load_from_file = "in/diagram_luxembourg.txt"
     #load_from_file = "in/23-53-05_30_0.005.txt"
-    load_from_file = "in/diagram_field2.txt"
+    #load_from_file = "in/diagram_field2.txt"
 
     if load_from_file == "":
         vor = generate_random_voronoi(num_points,
@@ -65,18 +65,18 @@ def main():
                                       ymax=ymax
                                       )
 
-        diagram = Diagram(voronoi=vor)
+        tessellation = Tessellation(voronoi=vor)
 
         filename = f"in/{datetime.now().strftime(f'%H-%M-%S_{num_points}_{phi}')}.txt"
-        diagram.save_to_txt(f"{filename}")
+        tessellation.save_to_txt(f"{filename}")
     else:
-        diagram = Diagram(txt_file=load_from_file)
+        tessellation = Tessellation(txt_file=load_from_file)
 
     # Plot the original input diagram
     if gui:
         plt.figure()    
             
-        diagram.plot()
+        tessellation.plot()
         enforce_plot_scale(xmin,xmax,ymin,ymax)
         plt.title(label="Input diagram")
         plt.waitforbuttonpress(0)
@@ -85,7 +85,7 @@ def main():
     # The main part... #
     ####################
     
-    approximation = VoronoiApproximation(diagram, gui=gui)
+    approximation = VoronoiApproximation(tessellation, gui=gui)
     
     # Create Voronoi diagram from centroids to compare later on.
     original_approximation = voronoi_from_points(approximation.estimator_points)
@@ -104,8 +104,10 @@ def main():
 
     print(f"Lower bound for omega: {approximation.omega}")
 
+    print(f"om... {approximation.compute_omega(approximation.estimator_points)}")
+
     if not gui:
-        diagram.plot()
+        tessellation.plot()
         voronoi_plot_2d(
            original_approximation,
            line_colors='orange',
