@@ -27,12 +27,17 @@ class VoronoiApproximation:
         self.omega = 1
         self.done = False
         
-        self.estimator_points = generate_estimator_points(diagram, gui=gui)
+        self.estimator_points = self.diagram.region_centers()
+
+        self.vertex_label_points = generate_label_points(diagram, 1, gui=False)
 
         if clamp_to_diagram:
             for p in self.estimator_points:
                 p.x = clamp(p.x, self.diagram.xmin, self.diagram.xmax)
                 p.y = clamp(p.y, self.diagram.ymin, self.diagram.ymax)
+
+        initial_omega = self.compute_omega(self.estimator_points)
+        print(f"Initial omega: {initial_omega}")
 
 
     def on_press(self, event) -> None:
@@ -40,6 +45,63 @@ class VoronoiApproximation:
         sys.stdout.flush()
         if event.key == 'x':
             self.done = True
+
+    
+    def compute_omega(self, points: list[Point]) -> float:
+        omega_min, omega_max = 0, 1
+
+        # first, get all points that are within the circle VC
+
+        for i, p in enumerate(points):
+
+            print(p.label)
+            print(len(self.diagram.regions))
+            print(len(self.diagram.centers))
+            
+            region = self.diagram.regions[p.label]
+            c = self.diagram.centers[p.label]
+
+            print('lets check this shit')
+            print(self.diagram.point_inside_region(p, p.label))
+            print(self.diagram.point_inside_region(c, p.label))
+
+            for r in region:
+                
+                v = Point(self.diagram.vertices[r].x, self.diagram.vertices[r].y)
+
+                for j, q in enumerate(points):
+                    if j == i:
+                        continue
+
+                    if v.distance(q) > max(v.distance(p), v.distance(c)):
+                        continue
+                    
+                    top = p.x * (p.x/2 - c.x) + p.y * (p.y/2 - c.y) + q.x * (c.x - q.x/2) + q.y * (c.y - q.y/2)
+                    
+                    top = (p.x**2 + p.y**2 - q.x**2 - q.y**2)/2 + c.x * (q.x - p.x) + c.y * (q.y - p.y)
+                    bottom = (v.x - c.x) * (p.x - q.x) + (v.y - c.y) * (p.y - q.y)
+
+                    top = (q.x**2 + q.y**2) - (p.x**2 + p.y**2) - 2*c.x*(q.x - p.x) - 2*c.y*(q.y - p.y)
+                    bottom = (v.x - c.x) * (2*q.x - 2*p.x) + (v.y - c.y)*(2*q.y - 2*p.y)
+
+                    om = top/bottom
+
+                    print(f"{top}/{bottom} = {om}")
+
+                    if 0 <= om <= 1:
+                        if bottom > 0:
+                            omega_max = min(om, omega_max)
+                        elif bottom < 0:
+                            omega_min = max(-om, omega_min)
+                        else:
+                            print("we got a 0!")
+
+        print(omega_min, omega_max)
+        if omega_max >= omega_min:
+            return omega_max
+        else:
+            return None
+
 
 
     def do_thingy(
