@@ -30,6 +30,29 @@ class Diagram:
         elif txt_file is not None:
             self.load_from_txt(txt_file)
 
+        self.centers = self.region_centers()
+
+
+    def region_centers(self) -> list[Point]:
+        centers = []
+        for i, region in enumerate(self.regions):
+            n = len(region)
+
+            if n < 2 or -1 in region:
+                continue
+
+            center_x = 0
+            center_y = 0
+
+            for point in region:
+                center_x += self.vertices[point].x
+                center_y += self.vertices[point].y
+
+            center = Point(center_x/n, center_y/n, label=i)
+            centers.append(center)
+        return centers
+    
+
     def point_inside_region(self, point:Point, region_index:int) -> bool:
         region = self.regions[region_index]
         
@@ -61,6 +84,7 @@ class Diagram:
             
         return True
 
+
     def save_to_txt(self, txt_file:str):
         with open(txt_file, "w") as f:
             for v in self.vertices:
@@ -69,6 +93,7 @@ class Diagram:
                 for i in r:
                     f.write(f"{i} ")
                 f.write("\n")
+
 
     def load_from_txt(self, txt_file:str):
         with open(txt_file, "r") as f:
@@ -90,9 +115,15 @@ class Diagram:
 
         print(f"Loaded {len(self.vertices)} vertices and {len(self.regions)} regions from {txt_file}.")
 
+
     def load_from_scipy_voronoi(self, vor):
         self.vertices = [Point(v[0], v[1]) for v in vor.vertices]
-        self.regions = vor.regions
+        self.regions = []
+        for r in vor.regions:
+            if len(r) < 2 or -1 in r:
+                continue
+            self.regions.append(r)
+
 
     def plot(self):
         for r in self.regions:
