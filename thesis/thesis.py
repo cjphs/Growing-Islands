@@ -40,7 +40,7 @@ def parse_args(phi, num_points, gui):
 def main():
     gui = False
 
-    phi = .001
+    phi = .0005
 
     # margin < 1 yields better results in shorter time
     margin = 1
@@ -94,7 +94,7 @@ def main():
     approximation.do_thingy(
         phi=phi, 
         iterations_before_reduction=100, 
-        omega_reduction=.05, 
+        omega_reduction=.002, 
         margin=margin
     )
 
@@ -119,7 +119,7 @@ def main():
 
     # generate new voronoi diagram from final estimator point positions
     new_vor = voronoi_from_points(approximation.estimator_points)
-    voronoi_plot_2d(new_vor, ax=plt.gca(), line_alpha=.5, line_colors='blue')
+    voronoi_plot_2d(new_vor, ax=plt.gca(), line_alpha=.5, show_vertices=False, line_colors='blue', line_style='--')
     enforce_plot_scale(xmin,xmax,ymin,ymax)
     plt.pause(1e-10)
 
