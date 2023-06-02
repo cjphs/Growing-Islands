@@ -85,17 +85,17 @@ def main():
     # The main part... #
     ####################
     
-    approximation = VoronoiApproximation(tessellation, gui=gui)
+    approximation = VoronoiApproximation(tessellation, gui=gui, print_progress=True)
     
     # Create Voronoi diagram from centroids to compare later on.
     original_approximation = voronoi_from_points(approximation.estimator_points)
 
     # Run the approximation algorithm.
     approximation.do_thingy(
-        phi=phi, 
-        iterations_before_reduction=100, 
-        omega_reduction=.002, 
-        margin=margin
+        phi=0.01, 
+        iterations_before_reduction=1000, 
+        omega_reduction=.025, 
+        margin=1
     )
 
     #########
@@ -104,7 +104,7 @@ def main():
 
     print(f"Lower bound for omega: {approximation.omega}")
 
-    print(f"om... {approximation.compute_omega(approximation.estimator_points)}")
+    print(f"om... {approximation.compute_omega(approximation.bestimator_points)}")
 
     if not gui:
         tessellation.plot()

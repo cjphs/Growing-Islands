@@ -18,16 +18,17 @@ from scipy.spatial import voronoi_plot_2d
 
 class VoronoiApproximation:
 
-    def __init__(self, tessellation:Tessellation, gui:bool=False, clamp_to_diagram:bool=True):
+    def __init__(self, tessellation:Tessellation, gui:bool=False, clamp_to_diagram:bool=True, print_progress:bool=True):
         self.tessellation = tessellation
 
         self.gui = gui
-        self.print_progress = True
+        self.print_progress = print_progress
         
         self.omega = 1
         self.done = False
         
         self.estimator_points = self.tessellation.region_centers()
+        self.bestimator_points= self.estimator_points
 
         self.vertex_label_points = generate_label_points(tessellation, 1, gui=False)
 
@@ -113,9 +114,13 @@ class VoronoiApproximation:
 
         iterations = 0
 
+        omega = self.compute_omega(self.estimator_points)
+
+        force_quit = False
+
         while not all_labels_satisfied:
 
-            label_points = generate_label_points(self.tessellation, self.omega, gui=self.gui)
+            label_points = generate_label_points(self.tessellation, omega, gui=self.gui)
 
             while(not self.done):
                 nudged, satisfied_count = nudge_estimators(
@@ -129,14 +134,6 @@ class VoronoiApproximation:
                 )
                 iterations += 1
 
-                # vor = voronoi_from_points(self.estimator_points)
-                # ax = plt.gca()
-                # ax.set_xlim([0, 1])
-                # ax.set_ylim([0, 1])
-                # f = voronoi_plot_2d(vor, ax=ax, show_points=False, show_vertices=False)
-                # f.savefig(f"vor_gif/voronoi_{iterations}.png")
-                # plt.close(f)
-
                 if not nudged:
                     self.done = True
 
@@ -147,11 +144,13 @@ class VoronoiApproximation:
                     iterations_since_highest += 1
                     if iterations_since_highest >= iterations_before_reduction:
                         self.done = True
+                        all_labels_satisfied = True
+                        force_quit = True
 
                 satisfied_percentage = satisfied_count/len(label_points)
 
                 # Dampen phi
-                phi = original_phi * (1-satisfied_percentage)
+                #phi = original_phi * (1 - satisfied_percentage)
                 # Dampen phi with iterations
                 #phi = original_phi * (1-satisfied_percentage) * (1 - iterations_since_highest/iterations_before_reduction)
 
@@ -181,14 +180,27 @@ class VoronoiApproximation:
 
                     plt.pause(1e-10)
 
-            if not all_labels_satisfied:
-                if self.gui:
-                    for l in label_points:
-                            l.plot_element[0].remove()
+            if all_labels_satisfied and not force_quit:
+                om = self.compute_omega(self.estimator_points)
+                print(iterations, omega, om)
 
-                self.omega -= omega_reduction
-                self.label_points = generate_label_points(self.tessellation, self.omega)
-                self.done = False
+                omega = om + omega_reduction
+                
+                if om < .98:
+                    phi = (1 - om)*.01
+                    iterations_since_highest = 0
+                    all_labels_satisfied = False
+                    self.bestimator_points = self.estimator_points
+                    self.done = False
+
+            #if not all_labels_satisfied:
+            #    if self.gui:
+            #        for l in label_points:
+            #                l.plot_element[0].remove()
+
+            #    self.omega -= omega_reduction
+            #    self.label_points = generate_label_points(self.tessellation, self.omega)
+            #    self.done = False
 
         end = datetime.now()
 
@@ -196,4 +208,4 @@ class VoronoiApproximation:
         sys.stdout.flush()
         print()
 
-        return self.estimator_points
+        return self.bestimator_points
