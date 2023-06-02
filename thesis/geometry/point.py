@@ -49,6 +49,10 @@ class Point:
                 closest_point = _
                 closest_point_distance = d
 
+            if d == closest_point_distance and self.label == _.label:
+                closest_point = _
+                closest_point_distance = d
+
         return closest_point
         
     def plot(self, style='co'):

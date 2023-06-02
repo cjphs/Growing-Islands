@@ -53,17 +53,9 @@ class VoronoiApproximation:
         # first, get all points that are within the circle VC
 
         for i, p in enumerate(points):
-
-            print(p.label)
-            print(len(self.tessellation.regions))
-            print(len(self.tessellation.centers))
             
             region = self.tessellation.regions[p.label]
             c = self.tessellation.centers[p.label]
-
-            print('lets check this shit')
-            print(self.tessellation.point_inside_region(p, p.label))
-            print(self.tessellation.point_inside_region(c, p.label))
 
             for r in region:
                 
@@ -81,7 +73,6 @@ class VoronoiApproximation:
 
                     om = top/bottom
 
-                    print(f"{top}/{bottom} = {om}")
 
                     if 0 <= om <= 1:
                         if bottom > 0:
@@ -91,7 +82,6 @@ class VoronoiApproximation:
                         else:
                             print("we got a 0!")
 
-        print(omega_min, omega_max)
         if omega_max >= omega_min:
             return omega_max
         else:
