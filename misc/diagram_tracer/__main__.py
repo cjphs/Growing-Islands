@@ -35,10 +35,12 @@ mouse_y = 0
 fps = 60
 point_click_distance = 15
 
-input_image = pygame.image.load("./misc/diagram_tracer/fields2.png")
+fname = "fields3"
+
+input_image = pygame.image.load(f"./misc/diagram_tracer/{fname}.png")
  
-def save_diagram(points, regions):
-    file = open("./misc/diagram_tracer/diagram_field2.txt", "w")
+def save_diagram(points, regions, fname="diagram.txt"):
+    file = open(f"./misc/diagram_tracer/{fname}.txt", "w")
 
     for p in points:
         file.write(f"{(p.x - 50)/500} {(p.y - 50)/500}\n")
@@ -87,8 +89,8 @@ while not done:
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_s:
-                save_diagram(points, regions)
-                print("Diagram saved to ./misc/diagram_tracer/diagram.txt")
+                save_diagram(points, regions, fname)
+                print(f"Diagram saved to ./misc/diagram_tracer/{fname}.txt")
  
     screen.fill(WHITE)
 

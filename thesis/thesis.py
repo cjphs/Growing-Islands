@@ -45,7 +45,7 @@ def main():
     # margin < 1 yields better results in shorter time
     margin = 1
 
-    num_points = 50
+    num_points = 40
 
     xmin,xmax = 0,1
     ymin,ymax = 0,1
@@ -56,6 +56,7 @@ def main():
     #load_from_file = "in/diagram_luxembourg.txt"
     #load_from_file = "in/23-53-05_30_0.005.txt"
     #load_from_file = "in/diagram_field2.txt"
+    #load_from_file = "in/fields3.txt"
 
     if load_from_file == "":
         vor = generate_random_voronoi(num_points,
@@ -85,16 +86,16 @@ def main():
     # The main part... #
     ####################
     
-    approximation = VoronoiApproximation(tessellation, gui=gui, print_progress=True)
+    approximation = VoronoiApproximation(tessellation, gui=gui, print_progress=False)
     
     # Create Voronoi diagram from centroids to compare later on.
-    original_approximation = voronoi_from_points(approximation.estimator_points)
+    original_approximation = voronoi_from_points(approximation.generator_points)
 
     # Run the approximation algorithm.
     approximation.do_thingy(
-        phi=0.01, 
+        phi=0.005, 
         iterations_before_reduction=1000, 
-        omega_reduction=.025, 
+        omega_reduction=.02, 
         margin=1
     )
 
@@ -104,7 +105,7 @@ def main():
 
     print(f"Lower bound for omega: {approximation.omega}")
 
-    print(f"om... {approximation.compute_omega(approximation.bestimator_points)}")
+    print(f"om... {approximation.compute_omega_2(approximation.bestimator_points)}")
 
     if not gui:
         tessellation.plot()
@@ -118,7 +119,7 @@ def main():
         )
 
     # generate new voronoi diagram from final estimator point positions
-    new_vor = voronoi_from_points(approximation.estimator_points)
+    new_vor = voronoi_from_points(approximation.generator_points)
     voronoi_plot_2d(new_vor, ax=plt.gca(), line_alpha=.5, show_vertices=False, line_colors='blue', line_style='--')
     enforce_plot_scale(xmin,xmax,ymin,ymax)
     plt.pause(1e-10)

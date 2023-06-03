@@ -1,6 +1,6 @@
 from matplotlib import pyplot as plt
 from nudging import nudge_estimators
-from preprocessing import generate_label_points
+from preprocessing import generate_label_points, generate_label_points_from_generators, get_region_estimator_point
 from input_generation.voronoi_funcs import voronoi_from_points
 
 import sys
@@ -9,7 +9,7 @@ from datetime import datetime
 from math import floor
 
 from geometry.tessellation import Tessellation
-from geometry.point import Point
+from geometry.point import Point, copy_points_list
 
 from helper_funcs import clamp
 
@@ -27,17 +27,17 @@ class VoronoiApproximation:
         self.omega = 1
         self.done = False
         
-        self.estimator_points = self.tessellation.region_centers()
-        self.bestimator_points= self.estimator_points
+        self.generator_points = self.tessellation.region_centers()
+        self.bestimator_points= self.generator_points
 
         self.vertex_label_points = generate_label_points(tessellation, 1, gui=False)
 
         if clamp_to_diagram:
-            for p in self.estimator_points:
+            for p in self.generator_points:
                 p.x = clamp(p.x, self.tessellation.xmin, self.tessellation.xmax)
                 p.y = clamp(p.y, self.tessellation.ymin, self.tessellation.ymax)
 
-        initial_omega = self.compute_omega(self.estimator_points)
+        initial_omega = self.compute_omega_2(self.generator_points)
         print(f"Initial omega: {initial_omega}")
 
 
@@ -87,6 +87,47 @@ class VoronoiApproximation:
             return omega_max
         else:
             return None
+    
+    # Compute using the spokes from the generator points instead
+    def compute_omega_2(self, points: list[Point]) -> float:
+        omega_min, omega_max = 0, 1
+
+        # first, get all points that are within the circle VC
+
+        for i, p in enumerate(points):
+            
+            region = self.tessellation.regions[p.label]
+            c = self.tessellation.centers[p.label]
+            c = p
+
+            for r in region:
+                
+                v = Point(self.tessellation.vertices[r].x, self.tessellation.vertices[r].y)
+
+                for j, q in enumerate(points):
+                    if j == i:
+                        continue
+
+                    if v.distance(q) > max(v.distance(p), v.distance(c)):
+                        continue
+
+                    top = (q.x**2 + q.y**2) - (p.x**2 + p.y**2) - 2*c.x*(q.x - p.x) - 2*c.y*(q.y - p.y)
+                    bottom = (v.x - c.x) * (2*q.x - 2*p.x) + (v.y - c.y)*(2*q.y - 2*p.y)
+
+                    om = top/bottom
+
+                    if 0 <= om <= 1:
+                        if bottom > 0:
+                            omega_max = min(om, omega_max)
+                        elif bottom < 0:
+                            omega_min = max(-om, omega_min)
+                        else:
+                            print("we got a 0!")
+
+        if omega_max >= omega_min:
+            return omega_max
+        else:
+            return None
 
 
 
@@ -114,17 +155,18 @@ class VoronoiApproximation:
 
         iterations = 0
 
-        omega = self.compute_omega(self.estimator_points)
+        omega = self.compute_omega_2(self.generator_points)
 
         force_quit = False
 
         while not all_labels_satisfied:
 
-            label_points = generate_label_points(self.tessellation, omega, gui=self.gui)
-
             while(not self.done):
+                # print("NEW ITERATION: ", omega)
+                label_points = generate_label_points_from_generators(self.tessellation, self.generator_points, omega, gui=self.gui)
+
                 nudged, satisfied_count = nudge_estimators(
-                    self.estimator_points, 
+                    self.generator_points, 
                     label_points, 
                     phi, 
                     pull=True, 
@@ -135,6 +177,7 @@ class VoronoiApproximation:
                 iterations += 1
 
                 if not nudged:
+                    print('all good man!')
                     self.done = True
 
                 if satisfied_count > highest_satisfied_count:
@@ -170,7 +213,7 @@ class VoronoiApproximation:
                     sys.stdout.flush()
 
                 if self.gui:
-                    for p in self.estimator_points:
+                    for p in self.generator_points:
                         p.update_plot()
 
                         if self.diagram.point_inside_region(p, p.label):
@@ -181,17 +224,21 @@ class VoronoiApproximation:
                     plt.pause(1e-10)
 
             if all_labels_satisfied and not force_quit:
-                om = self.compute_omega(self.estimator_points)
-                print(iterations, omega, om)
+                om = self.compute_omega_2(self.generator_points)
+                print("up you go!", iterations, omega, om, omega_reduction)
 
                 omega = om + omega_reduction
+
+                print("new omega: ", omega, om + omega_reduction)
                 
-                if om < .98:
-                    phi = (1 - om)*.01
+                if omega < 1:
+                    phi = original_phi * (1 - om)
                     iterations_since_highest = 0
                     all_labels_satisfied = False
-                    self.bestimator_points = self.estimator_points
+                    self.bestimator_points = copy_points_list(self.generator_points)
                     self.done = False
+
+                    print("The show's not over yet. \n")
 
             #if not all_labels_satisfied:
             #    if self.gui:
@@ -207,5 +254,7 @@ class VoronoiApproximation:
         sys.stdout.write("\r" + f"Finished in {end - begin} ({iterations} iterations)")
         sys.stdout.flush()
         print()
+
+        print(self.compute_omega_2(self.bestimator_points))
 
         return self.bestimator_points

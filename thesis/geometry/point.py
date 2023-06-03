@@ -63,3 +63,7 @@ class Point:
     
     def __str__(self):
         return f"({self.x}, {self.y}, L = {self.label})"
+    
+    
+def copy_points_list(points_list:list):
+    return [Point(p.x, p.y, p.label) for p in points_list]
