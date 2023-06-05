@@ -106,6 +106,7 @@ def main():
     print(calculate_discrepancy(tessellation, tess2))
     tessellation.plot(color='black')
     tess2.plot(color='red')
+    enforce_plot_scale(xmin,xmax,ymin,ymax)
     plt.show()
 
     plt.waitforbuttonpress(0)
