@@ -98,21 +98,23 @@ class VoronoiApproximation:
             
             region = self.tessellation.regions[p.label]
             c = self.tessellation.centers[p.label]
-            c = p
 
-            for r in region:
+            for corner_vertex_index in region:
                 
-                v = Point(self.tessellation.vertices[r].x, self.tessellation.vertices[r].y)
+                v = Point(
+                    self.tessellation.vertices[corner_vertex_index].x,
+                    self.tessellation.vertices[corner_vertex_index].y
+                )
 
                 for j, q in enumerate(points):
                     if j == i:
                         continue
 
-                    if v.distance(q) > max(v.distance(p), v.distance(c)):
+                    if v.distance(q) > v.distance(p):
                         continue
 
-                    top = (q.x**2 + q.y**2) - (p.x**2 + p.y**2) - 2*c.x*(q.x - p.x) - 2*c.y*(q.y - p.y)
-                    bottom = (v.x - c.x) * (2*q.x - 2*p.x) + (v.y - c.y)*(2*q.y - 2*p.y)
+                    top = (q.x**2 + q.y**2) - (p.x**2 + p.y**2) - 2*p.x*(q.x - p.x) - 2*p.y*(q.y - p.y)
+                    bottom = (v.x - p.x) * (2*q.x - 2*p.x) + (v.y - p.y)*(2*q.y - 2*p.y)
 
                     om = top/bottom
 
@@ -140,11 +142,12 @@ class VoronoiApproximation:
         ) -> list[Point]:
 
         begin = datetime.now()
-        self.points_satisfied = []
 
         if self.gui:
             plt.gcf().canvas.mpl_connect('key_press_event', self.on_press)
         
+        self.points_satisfied = []
+
         highest_satisfied_count = 0
         iterations_since_highest = 0
 
@@ -156,10 +159,13 @@ class VoronoiApproximation:
         iterations = 0
 
         omega = self.compute_omega_2(self.generator_points)
+        previous_omega = omega
 
         force_quit = False
 
         while not all_labels_satisfied:
+
+            iteration_phi = phi
 
             while(not self.done):
                 # print("NEW ITERATION: ", omega)
@@ -187,13 +193,11 @@ class VoronoiApproximation:
                     iterations_since_highest += 1
                     if iterations_since_highest >= iterations_before_reduction:
                         self.done = True
-                        all_labels_satisfied = True
-                        force_quit = True
 
                 satisfied_percentage = satisfied_count/len(label_points)
 
                 # Dampen phi
-                #phi = original_phi * (1 - satisfied_percentage)
+                #phi = iteration_phi * (1 - satisfied_percentage)
                 # Dampen phi with iterations
                 #phi = original_phi * (1-satisfied_percentage) * (1 - iterations_since_highest/iterations_before_reduction)
 
@@ -223,22 +227,39 @@ class VoronoiApproximation:
 
                     plt.pause(1e-10)
 
+            # Push omega up if all labels are satisfied
             if all_labels_satisfied and not force_quit:
+                previous_omega = omega
                 om = self.compute_omega_2(self.generator_points)
                 print("up you go!", iterations, omega, om, omega_reduction)
 
-                omega = om + omega_reduction
+                # omega = om + omega_reduction
+                omega = om + (1-om) / 2
 
                 print("new omega: ", omega, om + omega_reduction)
                 
-                if omega < 1:
+                if omega < .98:
                     phi = original_phi * (1 - om)
                     iterations_since_highest = 0
+                    highest_satisfied_count = 0
                     all_labels_satisfied = False
                     self.bestimator_points = copy_points_list(self.generator_points)
                     self.done = False
 
                     print("The show's not over yet. \n")
+
+            # Push omega down if not all labels are satisfied
+            elif not all_labels_satisfied:
+                if omega - previous_omega > .002:
+                    om = (previous_omega + omega)/2
+                    print("Down you go!", om)
+
+                    omega = om
+
+                    iterations_since_highest = 0
+                    highest_satisfied_count = 0
+
+                    self.done = False
 
             #if not all_labels_satisfied:
             #    if self.gui:

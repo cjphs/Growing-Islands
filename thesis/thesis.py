@@ -7,6 +7,7 @@ from input_generation.voronoi_funcs import generate_random_voronoi, voronoi_from
 from matplotlib import pyplot as plt
 from scipy.spatial import voronoi_plot_2d
 from voronoi_approximation import VoronoiApproximation
+from geometry.point import Point
 
 def enforce_plot_scale(xmin,xmax,ymin,ymax):
     ax = plt.gca()
@@ -57,6 +58,9 @@ def main():
     #load_from_file = "in/23-53-05_30_0.005.txt"
     #load_from_file = "in/diagram_field2.txt"
     #load_from_file = "in/fields3.txt"
+    #load_from_file = "in/14-04-12_40_0.0005.txt"
+
+    original_points = []
 
     if load_from_file == "":
         vor = generate_random_voronoi(num_points,
@@ -70,6 +74,8 @@ def main():
 
         filename = f"in/{datetime.now().strftime(f'%H-%M-%S_{num_points}_{phi}')}.txt"
         tessellation.save_to_txt(f"{filename}")
+
+        original_points = [Point(p[0], p[1]) for p in vor.points]
     else:
         tessellation = Tessellation(txt_file=load_from_file)
 
@@ -87,14 +93,15 @@ def main():
     ####################
     
     approximation = VoronoiApproximation(tessellation, gui=gui, print_progress=False)
-    
+
     # Create Voronoi diagram from centroids to compare later on.
     original_approximation = voronoi_from_points(approximation.generator_points)
 
+
     # Run the approximation algorithm.
     approximation.do_thingy(
-        phi=0.005, 
-        iterations_before_reduction=1000, 
+        phi=.0025, 
+        iterations_before_reduction=100, 
         omega_reduction=.02, 
         margin=1
     )
@@ -120,9 +127,14 @@ def main():
 
     # generate new voronoi diagram from final estimator point positions
     new_vor = voronoi_from_points(approximation.generator_points)
-    voronoi_plot_2d(new_vor, ax=plt.gca(), line_alpha=.5, show_vertices=False, line_colors='blue', line_style='--')
+    voronoi_plot_2d(new_vor, ax=plt.gca(), line_alpha=.5, show_vertices=False, line_colors='blue', line_style='--', show_points=False)
     enforce_plot_scale(xmin,xmax,ymin,ymax)
     plt.pause(1e-10)
+
+    for p in approximation.generator_points:
+        plt.scatter(p.x, p.y, color='red', marker='o')
+    #for p in original_points:
+    #    plt.scatter(p.x, p.y, color='black', marker='x')
 
     plt.figure()
     plt.plot(approximation.points_satisfied, color='black')
