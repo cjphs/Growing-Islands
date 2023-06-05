@@ -125,11 +125,11 @@ class Tessellation:
             self.regions.append(r)
 
 
-    def plot(self):
+    def plot(self,color:str='black',linewidth:float=.5):
         for r in self.regions:
             for i in range(len(r)):
                 if r[i] == -1 or r[(i+1)%len(r)] == -1:
                     continue
                 v1 = self.vertices[r[i]]
                 v2 = self.vertices[r[(i+1)%len(r)]]
-                plt.plot([v1.x, v2.x], [v1.y, v2.y], '-', linewidth=.5, color='black')
+                plt.plot([v1.x, v2.x], [v1.y, v2.y], '-', linewidth=linewidth, color=color)

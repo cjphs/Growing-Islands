@@ -9,6 +9,10 @@ from scipy.spatial import voronoi_plot_2d
 from voronoi_approximation import VoronoiApproximation
 from geometry.point import Point
 
+from time import sleep
+
+from discrepancy import calculate_discrepancy
+
 def enforce_plot_scale(xmin,xmax,ymin,ymax):
     ax = plt.gca()
     ax.set_xlim([xmin, xmax])
@@ -97,6 +101,14 @@ def main():
     # Create Voronoi diagram from centroids to compare later on.
     original_approximation = voronoi_from_points(approximation.generator_points)
 
+    tess2 = Tessellation(voronoi=original_approximation)
+
+    print(calculate_discrepancy(tessellation, tess2))
+    tessellation.plot(color='black')
+    tess2.plot(color='red')
+    plt.show()
+
+    plt.waitforbuttonpress(0)
 
     # Run the approximation algorithm.
     approximation.do_thingy(
