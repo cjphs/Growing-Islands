@@ -16,11 +16,15 @@ class Point:
         else:
             return None
 
-    def direction_to(self, other):
+    def direction_to(self, other, normalize=True):
         dist = self.distance(other)
 
-        dx = (other.x - self.x) / dist
-        dy = (other.y - self.y) / dist
+        dx = (other.x - self.x)
+        dy = (other.y - self.y)
+
+        if normalize:
+            dx /= dist
+            dy /= dist
 
         return Point(dx, dy)
 

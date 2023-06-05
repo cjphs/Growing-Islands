@@ -100,7 +100,7 @@ def main():
 
     # Run the approximation algorithm.
     approximation.do_thingy(
-        phi=.0025, 
+        phi=.075, 
         iterations_before_reduction=100, 
         omega_reduction=.02, 
         margin=1

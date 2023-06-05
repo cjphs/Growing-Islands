@@ -29,10 +29,10 @@ def nudge_estimators(
             label_point_region_estimator_point = get_region_estimator_point(estimator_points, label_point.label)
 
             if pull:
-                pull_vector = label_point_region_estimator_point.direction_to(vertex_point) * phi
+                pull_vector = label_point_region_estimator_point.direction_to(vertex_point, normalize=False) * phi
                 nudge[label_point.label] += pull_vector
             if push:
-                push_vector = vertex_point.direction_to(closest_estimator) * phi
+                push_vector = vertex_point.direction_to(closest_estimator, normalize=False) * phi
                 nudge[closest_estimator.label] += push_vector
 
             points_nudged = True

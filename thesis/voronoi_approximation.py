@@ -238,7 +238,7 @@ class VoronoiApproximation:
 
                 print("new omega: ", omega, om + omega_reduction)
                 
-                if omega < .98:
+                if om < .97:
                     phi = original_phi * (1 - om)
                     iterations_since_highest = 0
                     highest_satisfied_count = 0
