@@ -20,15 +20,13 @@ def calculate_discrepancy(T1:Tessellation, T2:Tessellation) -> float:
     p1 = tess2polys(T1)
     p2 = tess2polys(T2)
 
-    A = geometry.Polygon()
-    for p in p2:
-        A = A.union(p)
-    
-    B = geometry.Polygon()
-    for j in range(len(p2)):
-        B = B.union(p1[j].intersection(p2[j]))
+    discrep = geometry.Polygon()
 
-    discrep = A.difference(B)
+    for i in range(len(p1)):
+        for j in range(len(p2)):
+            if i == j:
+                continue
+            discrep = discrep.union(p1[i].intersection(p2[j]))
 
     boundary_box = geometry.Polygon([(0,0), (1,0), (1,1), (0,1)])
     discrep = discrep.intersection(boundary_box)
