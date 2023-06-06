@@ -29,7 +29,7 @@ def calculate_discrepancy(T1:Tessellation, T2:Tessellation) -> float:
             discrep = discrep.union(p1[i].intersection(p2[j]))
 
     boundary_box = geometry.Polygon([(0,0), (1,0), (1,1), (0,1)])
-    discrep = discrep.intersection(boundary_box)
+    #discrep = discrep.intersection(boundary_box)
 
     myPoly = gpd.GeoSeries([discrep])
     myPoly.plot()

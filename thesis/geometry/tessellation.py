@@ -38,9 +38,6 @@ class Tessellation:
         for i, region in enumerate(self.regions):
             n = len(region)
 
-            if n < 2 or -1 in region:
-                continue
-
             center_x = 0
             center_y = 0
 
@@ -126,10 +123,17 @@ class Tessellation:
 
 
     def plot(self,color:str='black',linewidth:float=.5):
-        for r in self.regions:
-            for i in range(len(r)):
-                if r[i] == -1 or r[(i+1)%len(r)] == -1:
-                    continue
-                v1 = self.vertices[r[i]]
-                v2 = self.vertices[r[(i+1)%len(r)]]
+        for i, r in enumerate(self.regions):
+            cx, cy = 0, 0
+            for j in range(len(r)):
+                v1 = self.vertices[r[j]]
+                v2 = self.vertices[r[(j+1)%len(r)]]
                 plt.plot([v1.x, v2.x], [v1.y, v2.y], '-', linewidth=linewidth, color=color)
+
+                cx += v1.x
+                cy += v1.y
+
+            cx /= len(r)
+            cy /= len(r)
+
+            plt.text(cx, cy, str(i), fontsize=8, color=color)

@@ -13,6 +13,8 @@ from time import sleep
 
 from discrepancy import calculate_discrepancy
 
+from shapely_voronoi import random_voronoi_tessellation, voronoi_tessellation_from_points
+
 def enforce_plot_scale(xmin,xmax,ymin,ymax):
     ax = plt.gca()
     ax.set_xlim([xmin, xmax])
@@ -67,19 +69,21 @@ def main():
     original_points = []
 
     if load_from_file == "":
-        vor = generate_random_voronoi(num_points,
-                                      xmin=xmin,
-                                      xmax=xmax,
-                                      ymin=ymin,
-                                      ymax=ymax
-                                      )
+        #vor = generate_random_voronoi(num_points,
+        #                              xmin=xmin,
+        #                              xmax=xmax,
+        #                              ymin=ymin,
+        #                              ymax=ymax
+        #                              )
 
-        tessellation = Tessellation(voronoi=vor)
+        #tessellation = Tessellation(voronoi=vor)
+
+        tessellation = random_voronoi_tessellation(num_points)
 
         filename = f"in/{datetime.now().strftime(f'%H-%M-%S_{num_points}_{phi}')}.txt"
         tessellation.save_to_txt(f"{filename}")
 
-        original_points = [Point(p[0], p[1]) for p in vor.points]
+        #original_points = [Point(p[0], p[1]) for p in vor.points]
     else:
         tessellation = Tessellation(txt_file=load_from_file)
 
@@ -99,21 +103,17 @@ def main():
     approximation = VoronoiApproximation(tessellation, gui=gui, print_progress=False)
 
     # Create Voronoi diagram from centroids to compare later on.
-    original_approximation = voronoi_from_points(approximation.generator_points)
+    original_approximation = voronoi_tessellation_from_points(approximation.generator_points)
 
-    tess2 = Tessellation(voronoi=original_approximation)
-
-    print(calculate_discrepancy(tessellation, tess2))
+    print(calculate_discrepancy(tessellation, original_approximation))
     tessellation.plot(color='black')
-    tess2.plot(color='red')
-    enforce_plot_scale(xmin,xmax,ymin,ymax)
+    original_approximation.plot(color='red')
+    #enforce_plot_scale(xmin,xmax,ymin,ymax)
     plt.show()
-
-    plt.waitforbuttonpress(0)
 
     # Run the approximation algorithm.
     approximation.do_thingy(
-        phi=.075, 
+        phi=.02, 
         iterations_before_reduction=100, 
         omega_reduction=.02, 
         margin=1
@@ -129,20 +129,20 @@ def main():
 
     if not gui:
         tessellation.plot()
-        voronoi_plot_2d(
-           original_approximation,
-           line_colors='orange',
-           line_alpha=0.2,
-           ax=plt.gca(),
-           show_points=False,
-           show_vertices=False
-        )
+        original_approximation.plot(color='orange')
 
     # generate new voronoi diagram from final estimator point positions
-    new_vor = voronoi_from_points(approximation.generator_points)
-    voronoi_plot_2d(new_vor, ax=plt.gca(), line_alpha=.5, show_vertices=False, line_colors='blue', line_style='--', show_points=False)
+    final_tess = voronoi_tessellation_from_points(approximation.bestimator_points)
+    #final_tess.plot(color='blue')
     enforce_plot_scale(xmin,xmax,ymin,ymax)
     plt.pause(1e-10)
+
+
+    print(f"Area discrepancy: {calculate_discrepancy(tessellation, final_tess)} %")
+    tessellation.plot(color='black')
+    final_tess.plot(color='red')
+    #enforce_plot_scale(xmin,xmax,ymin,ymax)
+    plt.show()
 
     for p in approximation.generator_points:
         plt.scatter(p.x, p.y, color='red', marker='o')

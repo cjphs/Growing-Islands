@@ -193,6 +193,7 @@ class VoronoiApproximation:
                     iterations_since_highest += 1
                     if iterations_since_highest >= iterations_before_reduction:
                         self.done = True
+                        all_labels_satisfied = True
 
                 satisfied_percentage = satisfied_count/len(label_points)
 
@@ -247,9 +248,12 @@ class VoronoiApproximation:
                     self.done = False
 
                     print("The show's not over yet. \n")
+                else:
+                    all_labels_satisfied = True
+
 
             # Push omega down if not all labels are satisfied
-            elif not all_labels_satisfied:
+            elif not all_labels_satisfied and False:
                 if omega - previous_omega > .002:
                     om = (previous_omega + omega)/2
                     print("Down you go!", om)
