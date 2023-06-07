@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 from voronoi_approximation import VoronoiApproximation
 from discrepancy import calculate_discrepancy
 
-from shapely_voronoi import (
+from voronoi import (
     random_voronoi_tessellation,
     voronoi_tessellation_from_points,
 )

@@ -34,9 +34,14 @@ def calculate_discrepancy(T1: Tessellation, T2: Tessellation) -> float:
     return discrep
 
 
+def plot_discrepancy(discrepancy_polygon):
+    myPoly = gpd.GeoSeries([discrepancy_polygon])
+    myPoly.plot(color="gray")
+
+
 if __name__ == "__main__":
     from voronoi_approximation import VoronoiApproximation
-    from shapely_voronoi import (
+    from voronoi import (
         random_voronoi_tessellation,
         voronoi_tessellation_from_points,
     )
@@ -53,8 +58,6 @@ if __name__ == "__main__":
 
     print("Area discrepancy:", discrepancy.area)
 
-    myPoly = gpd.GeoSeries([discrepancy])
-    myPoly.plot(color="gray")
     tessellation.plot(color="black")
     original_approximation.plot(color="red", linewidth=1.25)
 

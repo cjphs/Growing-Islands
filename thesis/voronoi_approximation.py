@@ -147,7 +147,7 @@ class VoronoiApproximation:
     def do_thingy(
         self,
         phi: float = 0.005,
-        iterations_before_reduction: int = 100,
+        iterations_before_reduction: int = 200,
         omega_reduction: float = 0.05,
         margin: float = 1,
     ) -> list[Point]:
@@ -200,7 +200,6 @@ class VoronoiApproximation:
                     iterations_since_highest += 1
                     if iterations_since_highest >= iterations_before_reduction:
                         self.done = True
-                        all_labels_satisfied = True
 
                 satisfied_percentage = satisfied_count / len(label_points)
 
@@ -248,6 +247,8 @@ class VoronoiApproximation:
                 # omega = om + omega_reduction
                 omega = om + (1 - om) / 2
 
+                self.omega = om
+
                 print(f"previous: {om}, new: {omega}")
 
                 if om < 0.98:
@@ -263,7 +264,8 @@ class VoronoiApproximation:
                     all_labels_satisfied = True
 
             # Push omega down if not all labels are satisfied
-            elif not all_labels_satisfied and False:
+            elif not all_labels_satisfied:
+                break
                 if omega - previous_omega > 0.002:
                     om = (previous_omega + omega) / 2
                     print("Down you go!", om)
@@ -289,7 +291,5 @@ class VoronoiApproximation:
         sys.stdout.write("\r" + f"Finished in {end - begin} ({iterations} iterations)")
         sys.stdout.flush()
         print()
-
-        print(self.compute_omega_2(self.bestimator_points))
 
         return self.bestimator_points
