@@ -1,29 +1,29 @@
 import shapely
 import shapely.ops
 import random
-import geopandas as gpd
 import matplotlib.pyplot as plt
 
-from geometry.tessellation import Tessellation
-from geometry.point import Point
+from geometry import Point, Tessellation
 
-def random_voronoi_tessellation(num_points:float=30) -> Tessellation:
+
+def random_voronoi_tessellation(num_points: float = 30) -> Tessellation:
     points = [Point(random.random(), random.random()) for i in range(num_points)]
     return voronoi_tessellation_from_points(points)
 
 
-def voronoi_tessellation_from_points(points_list:list[Point]) -> Tessellation:
-
-    bound_box = shapely.geometry.Polygon([(0,0), (0,1), (1,1), (1,0)])
+def voronoi_tessellation_from_points(points_list: list[Point]) -> Tessellation:
+    bound_box = shapely.geometry.Polygon([(0, 0), (0, 1), (1, 1), (1, 0)])
 
     points = [(p.x, p.y) for p in points_list]
 
     clip = shapely.Polygon([(0, 0), (0, 1), (1, 1), (1, 0)])
-    voronoi = shapely.ops.voronoi_diagram(shapely.geometry.MultiPoint(points), envelope=clip)
-    
-    def xy_hash_index(x,y):
+    voronoi = shapely.ops.voronoi_diagram(
+        shapely.geometry.MultiPoint(points), envelope=clip
+    )
+
+    def xy_hash_index(x, y):
         return str(x) + "," + str(y)
-    
+
     vertices_indices = {}
 
     vertices = []
@@ -45,13 +45,11 @@ def voronoi_tessellation_from_points(points_list:list[Point]) -> Tessellation:
             if xy_hash not in vertices_indices:
                 vertices_indices[xy_hash] = vertex_index
                 vertex_index += 1
-                
+
                 x, y = float(p[0]), float(p[1])
 
                 vertices.append(Point(x, y))
-            
             region.append(vertices_indices[xy_hash])
-        
         regions.append(region)
 
     # Sort regions by generator points
@@ -62,11 +60,9 @@ def voronoi_tessellation_from_points(points_list:list[Point]) -> Tessellation:
                 regions_sorted[i] = regions[j]
                 break
 
-    print(regions, regions_sorted)
-    
     return Tessellation(vertices, regions_sorted)
 
-                
+
 if __name__ == "__main__":
     tess = random_voronoi_tessellation(num_points=30)
     tess.plot()
