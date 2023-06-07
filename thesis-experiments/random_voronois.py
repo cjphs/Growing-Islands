@@ -16,7 +16,7 @@ if __name__ == "__main__":
         phi: float,
         iterations_before_reduction: int,
     ):
-        vor_approx = VoronoiApproximation(vor_tess)
+        vor_approx = VoronoiApproximation(vor_tess, print_progress=False)
 
         vor_approx.do_thingy(phi=0.01, iterations_before_reduction=300)
 
