@@ -16,10 +16,7 @@ class Point:
         self.satisfied = False
 
     def distance(self, other):
-        if type(other) == Point:
-            return sqrt((other.x - self.x) ** 2 + (other.y - self.y) ** 2)
-        else:
-            return None
+        return sqrt((other.x - self.x) ** 2 + (other.y - self.y) ** 2)
 
     def direction_to(self, other, normalize=True):
         dist = self.distance(other)
@@ -99,7 +96,7 @@ class Tessellation:
         elif txt_file is not None:
             self.load_from_txt(txt_file)
 
-        self.centers = self.region_centers()
+        # self.centers = self.region_centers()
 
     def region_centers(self) -> list[Point]:
         centers = []
@@ -158,13 +155,13 @@ class Tessellation:
                 f.write("\n")
 
     def load_from_txt(self, txt_file: str):
+        self.vertices = []
+        self.regions = []
+        i = -1
         with open(txt_file, "r") as f:
             for l in f.readlines():
-                print(l)
-                if l == "\n" or l == "" or l == " ":
-                    continue
-                if l[0] == "#":
-                    continue
+                i += 1
+                print(i, ":", l)
 
                 l = l.replace("\n", "").strip()
                 l = l.split(" ")
@@ -174,6 +171,7 @@ class Tessellation:
                 elif len(l) > 2:
                     print(l)
                     self.regions.append([int(i) for i in l if i != ""])
+                    print(self.regions[-1])
 
         print(
             f"Loaded {len(self.vertices)} vertices and {len(self.regions)} regions from {txt_file}."

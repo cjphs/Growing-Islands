@@ -46,7 +46,7 @@ if __name__ == "__main__":
         voronoi_tessellation_from_points,
     )
 
-    tessellation = random_voronoi_tessellation(30)
+    tessellation = random_voronoi_tessellation(50)
 
     approximation = VoronoiApproximation(tessellation)
 
@@ -58,6 +58,7 @@ if __name__ == "__main__":
 
     print("Area discrepancy:", discrepancy.area)
 
+    plot_discrepancy(discrepancy)
     tessellation.plot(color="black")
     original_approximation.plot(color="red", linewidth=1.25)
 

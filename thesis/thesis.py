@@ -66,6 +66,7 @@ def main():
     # load_from_file = "in/diagram_field2.txt"
     # load_from_file = "in/fields3.txt"
     # load_from_file = "in/14-04-12_40_0.0005.txt"
+    load_from_file = "in/territories.txt"
 
     original_points = []
 
@@ -110,7 +111,7 @@ def main():
 
     # Run the approximation algorithm.
     approximation.do_thingy(
-        phi=0.02, iterations_before_reduction=200, omega_reduction=0.02, margin=1
+        phi=0.2, iterations_before_reduction=150, omega_reduction=0.02, margin=1
     )
 
     #########
@@ -131,7 +132,10 @@ def main():
     enforce_plot_scale(xmin, xmax, ymin, ymax)
     plt.pause(1e-10)
 
-    print(f"Area discrepancy: {calculate_discrepancy(tessellation, final_tess)} %")
+    print(
+        f"Area discrepancy og: {calculate_discrepancy(tessellation, original_approximation).area} %"
+    )
+    print(f"Area discrepancy: {calculate_discrepancy(tessellation, final_tess).area} %")
     tessellation.plot(color="black")
     final_tess.plot(color="red")
     # enforce_plot_scale(xmin,xmax,ymin,ymax)

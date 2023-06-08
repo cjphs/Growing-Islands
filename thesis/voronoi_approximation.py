@@ -32,8 +32,11 @@ class VoronoiApproximation:
         self.omega = 1
         self.done = False
 
+        print(self.tessellation.regions)
         self.generator_points = self.tessellation.region_centers()
         self.bestimator_points = self.generator_points
+
+        self.time_taken = None
 
         self.vertex_label_points = generate_label_points(tessellation, 1, gui=False)
 
@@ -57,7 +60,7 @@ class VoronoiApproximation:
 
         for i, p in enumerate(points):
             region = self.tessellation.regions[p.label]
-            c = self.tessellation.centers[p.label]
+            c = Point(p.x, p.y)
 
             for r in region:
                 v = Point(
@@ -80,6 +83,10 @@ class VoronoiApproximation:
                     bottom = (v.x - c.x) * (2 * q.x - 2 * p.x) + (v.y - c.y) * (
                         2 * q.y - 2 * p.y
                     )
+
+                    if bottom == 0:
+                        omega_max = 1
+                        continue
 
                     om = top / bottom
 
@@ -104,7 +111,6 @@ class VoronoiApproximation:
 
         for i, p in enumerate(points):
             region = self.tessellation.regions[p.label]
-            c = self.tessellation.centers[p.label]
 
             for corner_vertex_index in region:
                 v = Point(
@@ -128,6 +134,10 @@ class VoronoiApproximation:
                     bottom = (v.x - p.x) * (2 * q.x - 2 * p.x) + (v.y - p.y) * (
                         2 * q.y - 2 * p.y
                     )
+
+                    if bottom == 0:
+                        omega_max = 1
+                        continue
 
                     om = top / bottom
 
@@ -177,7 +187,6 @@ class VoronoiApproximation:
             iteration_phi = phi
 
             while not self.done:
-                # print("NEW ITERATION: ", omega)
                 label_points = generate_label_points_from_generators(
                     self.tessellation, self.generator_points, omega, gui=self.gui
                 )
@@ -242,16 +251,15 @@ class VoronoiApproximation:
             if all_labels_satisfied and not force_quit:
                 previous_omega = omega
                 om = self.compute_omega_2(self.generator_points)
-                print("up you go!", iterations, omega, om, omega_reduction)
 
                 # omega = om + omega_reduction
                 omega = om + (1 - om) / 2
 
                 self.omega = om
 
-                print(f"previous: {om}, new: {omega}")
+                print(f"[{iterations} previous: {om}, new: {omega}")
 
-                if om < 0.98:
+                if om < 0.9999:
                     phi = original_phi * (1 - om)
                     iterations_since_highest = 0
                     highest_satisfied_count = 0
@@ -265,10 +273,14 @@ class VoronoiApproximation:
 
             # Push omega down if not all labels are satisfied
             elif not all_labels_satisfied:
-                break
                 if omega - previous_omega > 0.002:
                     om = (previous_omega + omega) / 2
+                    phi = original_phi * (1 - om)
                     print("Down you go!", om)
+
+                    if om - previous_omega < 0.01:
+                        all_labels_satisfied = True
+                        break
 
                     omega = om
 
@@ -287,6 +299,9 @@ class VoronoiApproximation:
             #    self.done = False
 
         end = datetime.now()
+
+        self.time_taken = end - begin
+        self.iterations = iterations
 
         sys.stdout.write("\r" + f"Finished in {end - begin} ({iterations} iterations)")
         sys.stdout.flush()
