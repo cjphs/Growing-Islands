@@ -5,7 +5,16 @@ from matplotlib import patches as mpatches
 
 files = ["02", "025", "03", "035"]
 files = [".015", ".02", ".0225", ".025", ".0275", ".03", ".035", ".04", ".045"]
-files = [".005", ".0075", ".01", ".015", ".0175", ".02", ".025", ".03", ".045", ".05"]
+files = [
+    ".005",
+    ".01",
+    ".015",
+    ".02",
+    ".025",
+    ".03",
+    ".045",
+    ".05",
+]
 
 
 i = 1
@@ -48,6 +57,9 @@ blu_patch = mpatches.Patch(color="blue", label=r"$\delta$")
 plt.legend(handles=[red_patch, blu_patch])
 plt.xlabel(r"$\phi$")
 
+plt.title(
+    r"$\omega$ and $\delta$ for different values of $\phi$ on 100 randomly-generated Voronoi tessellations"
+)
 plt.show()
 
 

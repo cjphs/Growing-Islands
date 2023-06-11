@@ -19,7 +19,7 @@ if __name__ == "__main__":
     tess = voronoi_tessellation_from_points(points)
 
     wiggle = 0.0025
-    f = open("results/wiggle_0025.txt", "w")
+    f = open("results/wiggle_025.txt", "w")
 
     for i in range(50):
         for v in tess.vertices:

@@ -30,10 +30,10 @@ def approximate_random_voronoi(
 
 
 if __name__ == "__main__":
-    phi = 0.0175
+    phi = 0.0225
     its = 50
 
-    f = open("results/results_0175_50.txt", "w")
+    f = open("results/results_0225_50.txt", "w")
 
     num_points = 32
     for j in range(100):
