@@ -161,7 +161,6 @@ class Tessellation:
         with open(txt_file, "r") as f:
             for l in f.readlines():
                 i += 1
-                print(i, ":", l)
 
                 l = l.replace("\n", "").strip()
                 l = l.split(" ")
@@ -169,9 +168,7 @@ class Tessellation:
                     x, y = l
                     self.vertices.append(Point(float(x), float(y)))
                 elif len(l) > 2:
-                    print(l)
                     self.regions.append([int(i) for i in l if i != ""])
-                    print(self.regions[-1])
 
         print(
             f"Loaded {len(self.vertices)} vertices and {len(self.regions)} regions from {txt_file}."

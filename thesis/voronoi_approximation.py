@@ -232,11 +232,6 @@ class VoronoiApproximation:
                     done = True
                     break
 
-                # Dampen phi
-                # phi = iteration_phi * (1 - satisfied_percentage)
-                # Dampen phi with iterations
-                # phi = original_phi * (1-satisfied_percentage) * (1 - iterations_since_highest/iterations_before_reduction)
-
                 # Print progress
                 if self.print_progress:
                     percent_bar_length = os.get_terminal_size().columns

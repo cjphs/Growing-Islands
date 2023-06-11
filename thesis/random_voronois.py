@@ -30,8 +30,10 @@ def approximate_random_voronoi(
 
 
 if __name__ == "__main__":
-    phi = 0.045
-    f = open("results/results_045_150.txt", "w")
+    phi = 0.0175
+    its = 50
+
+    f = open("results/results_0175_50.txt", "w")
 
     num_points = 32
     for j in range(100):
@@ -43,9 +45,11 @@ if __name__ == "__main__":
 
         # vor_tess = random_voronoi_tessellation(num_points)
         final_tess, omega, discrepancy, iterations, time = approximate_random_voronoi(
-            vor_tess, phi, 150
+            vor_tess, phi, its
         )
         f.write(f"{omega},{discrepancy.area},{time}\n")
+
+        print(f"{j} / {100}")
 
     f.close()
 

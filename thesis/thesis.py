@@ -61,12 +61,12 @@ def main():
     phi, num_points, gui = parse_args(phi, num_points, gui)
 
     load_from_file = ""
-    # load_from_file = "in/diagram_luxembourg.txt"
+    load_from_file = "in/diagram_luxembourg.txt"
     # load_from_file = "in/23-53-05_30_0.005.txt"
     # load_from_file = "in/diagram_field2.txt"
     # load_from_file = "in/fields3.txt"
     # load_from_file = "in/14-04-12_40_0.0005.txt"
-    load_from_file = "in/territories.txt"
+    # load_from_file = "in/territories.txt"
 
     original_points = []
 
@@ -112,9 +112,7 @@ def main():
     )
 
     # Run the approximation algorithm.
-    approximation.do_thingy(
-        phi=0.025, iterations_before_reduction=50, omega_reduction=0.02, margin=1
-    )
+    approximation.do_thingy(phi=0.0175, iterations_before_reduction=50, margin=1)
 
     plt.box(False)
 
