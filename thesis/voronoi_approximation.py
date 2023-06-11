@@ -178,17 +178,25 @@ class VoronoiApproximation:
 
         iterations = 0
 
-        omega = self.compute_omega_2(self.generator_points)
-        previous_omega = omega
-
         force_quit = False
 
-        while not all_labels_satisfied:
+        done = False
+        while not done:
             iteration_phi = phi
 
-            while not self.done:
+            omega = self.compute_omega_2(self.generator_points)
+            omega_target = omega + (1 - omega) / 2
+            phi = original_phi * (1 - omega)
+
+            print(f"[{iterations} previous: {omega}, new: {omega_target}")
+
+            all_labels_satisfied = False
+
+            self.omega = omega
+
+            while not all_labels_satisfied:
                 label_points = generate_label_points_from_generators(
-                    self.tessellation, self.generator_points, omega, gui=self.gui
+                    self.tessellation, self.generator_points, omega_target, gui=self.gui
                 )
 
                 nudged, satisfied_count = nudge_estimators(
@@ -200,32 +208,34 @@ class VoronoiApproximation:
                     diagram=self.tessellation,
                     gui=self.gui,
                 )
-                iterations += 1
 
+                satisfied_percentage = satisfied_count / len(label_points)
+                self.points_satisfied.append(satisfied_percentage)
+
+                if not nudged:
+                    print(f"all good man! satisfied % = {satisfied_percentage}")
+                    all_labels_satisfied = True
+                    break
+
+                iterations += 1
                 if satisfied_count > highest_satisfied_count:
                     highest_satisfied_count = satisfied_count
                     iterations_since_highest = 0
                 else:
                     iterations_since_highest += 1
                     if iterations_since_highest >= iterations_before_reduction:
-                        self.done = True
+                        omega_target = (omega_target + omega) / 2
+                        print("omega down! ", omega_target, omega)
+                        iterations_since_highest = 0  #
 
-                satisfied_percentage = satisfied_count / len(label_points)
-
-                if not nudged:
-                    print(f"all good man! satisfied % = {satisfied_percentage}")
-                    self.done = True
+                if omega_target - omega < 0.001:
+                    done = True
+                    break
 
                 # Dampen phi
                 # phi = iteration_phi * (1 - satisfied_percentage)
                 # Dampen phi with iterations
                 # phi = original_phi * (1-satisfied_percentage) * (1 - iterations_since_highest/iterations_before_reduction)
-
-                if satisfied_percentage >= margin:
-                    all_labels_satisfied = True
-                    self.done = True
-
-                self.points_satisfied.append(satisfied_percentage)
 
                 # Print progress
                 if self.print_progress:
@@ -246,57 +256,6 @@ class VoronoiApproximation:
                             p.plot_element[0].set_markerfacecolor("aqua")
 
                     plt.pause(1e-10)
-
-            # Push omega up if all labels are satisfied
-            if all_labels_satisfied and not force_quit:
-                previous_omega = omega
-                om = self.compute_omega_2(self.generator_points)
-
-                # omega = om + omega_reduction
-                omega = om + (1 - om) / 2
-
-                self.omega = om
-
-                print(f"[{iterations} previous: {om}, new: {omega}")
-
-                if om < 0.9999:
-                    phi = original_phi * (1 - om)
-                    iterations_since_highest = 0
-                    highest_satisfied_count = 0
-                    all_labels_satisfied = False
-                    self.bestimator_points = copy_points_list(self.generator_points)
-                    self.done = False
-
-                    print("The show's not over yet. \n")
-                else:
-                    all_labels_satisfied = True
-
-            # Push omega down if not all labels are satisfied
-            elif not all_labels_satisfied:
-                if omega - previous_omega > 0.002:
-                    om = (previous_omega + omega) / 2
-                    phi = original_phi * (1 - om)
-                    print("Down you go!", om)
-
-                    if om - previous_omega < 0.01:
-                        all_labels_satisfied = True
-                        break
-
-                    omega = om
-
-                    iterations_since_highest = 0
-                    highest_satisfied_count = 0
-
-                    self.done = False
-
-            # if not all_labels_satisfied:
-            #    if self.gui:
-            #        for l in label_points:
-            #                l.plot_element[0].remove()
-
-            #    self.omega -= omega_reduction
-            #    self.label_points = generate_label_points(self.tessellation, self.omega)
-            #    self.done = False
 
         end = datetime.now()
 

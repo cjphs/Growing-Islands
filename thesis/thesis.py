@@ -88,6 +88,8 @@ def main():
         # original_points = [Point(p[0], p[1]) for p in vor.points]
     else:
         tessellation = Tessellation(txt_file=load_from_file)
+        for v in tessellation.vertices:
+            v.y = 1 - v.y
 
     # Plot the original input diagram
     if gui:
@@ -111,8 +113,10 @@ def main():
 
     # Run the approximation algorithm.
     approximation.do_thingy(
-        phi=0.2, iterations_before_reduction=150, omega_reduction=0.02, margin=1
+        phi=0.025, iterations_before_reduction=50, omega_reduction=0.02, margin=1
     )
+
+    plt.box(False)
 
     #########
     # Done. #
@@ -124,7 +128,7 @@ def main():
 
     if not gui:
         tessellation.plot()
-        original_approximation.plot(color="orange")
+        # original_approximation.plot(color="orange")
 
     # generate new voronoi diagram from final estimator point positions
     final_tess = voronoi_tessellation_from_points(approximation.bestimator_points)
