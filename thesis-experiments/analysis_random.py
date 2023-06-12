@@ -70,6 +70,7 @@ warnings.filterwarnings("ignore")
 prev_x = None
 prev_y = None
 
+j = 0
 for f in files:
     df = pd.read_csv(f"results/results_{f[1:]}_50.txt")
     df.columns = ["omega", "discrepancy", "time"]
@@ -89,16 +90,26 @@ for f in files:
     prev_x, prev_y = x, y
 
     plt.scatter(x, y, color="black")
+
+    if j == 0:
+        t = r"$\phi = $" + f"{float(f)}"
+    else:
+        t = rf"{float(f)}"
+
+    print(j, t)
+
     plt.text(
         x,
-        y + 0.1,
-        r"$\phi = $" + f"{float(f)}",
-        fontsize=9,
+        y + 0.08,
+        t,
+        fontsize=13,
         horizontalalignment="center",
     )
 
     plt.title(r"Trajectory of median values depending on $\phi$")
     plt.xlabel(r"median area discrepancy ($\delta$)")
     plt.ylabel("median time (s)")
+
+    j += 1
 
 plt.show()

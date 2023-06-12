@@ -10,24 +10,29 @@ from voronoi_approximation import VoronoiApproximation
 import random
 
 if __name__ == "__main__":
+    n = 8
     points = [
-        Point(i / 10, j / 10 + (i % 2) * 0.05)
-        for i in range(1, 10)
-        for j in range(1, 10)
+        Point(i / n, j / n + (i % 2) * (1 / (n * 2)))
+        for i in range(1, n)
+        for j in range(1, n)
     ]
 
     tess = voronoi_tessellation_from_points(points)
 
-    wiggle = 0.0025
-    f = open("results/wiggle_025.txt", "w")
+    plt.show()
 
-    for i in range(50):
+    wiggle = 0.02
+    f = open("results/wiggle_02.txt", "w")
+
+    for i in range(20):
+        tess = voronoi_tessellation_from_points(points)
+
         for v in tess.vertices:
             v.x += random.uniform(-wiggle, wiggle)
             v.y += random.uniform(-wiggle, wiggle)
 
         approx = VoronoiApproximation(tess, print_progress=False)
-        approx.do_thingy(phi=0.025, iterations_before_reduction=100)
+        approx.do_thingy(phi=0.02, iterations_before_reduction=100)
 
         final_tess = voronoi_tessellation_from_points(approx.generator_points)
 

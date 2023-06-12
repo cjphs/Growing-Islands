@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib import patches as mpatches
 
-files = [".0000", ".0005", ".001", ".0015", ".002", ".0025"]
+files = [".0000", ".0015", ".0025", ".005", ".01", ".015", ".02"]
 
 i = 1
 for f in files:
@@ -37,8 +37,8 @@ for f in files:
     i += 1
 
 
-red_patch = mpatches.Patch(color="red", label="Omega")
-blu_patch = mpatches.Patch(color="blue", label="Area discrepancy")
+red_patch = mpatches.Patch(color="red", label=r"$\omega$")
+blu_patch = mpatches.Patch(color="blue", label=r"$\delta$")
 
 plt.legend(handles=[red_patch, blu_patch])
 plt.xlabel("Tessellation vertex distortion")
