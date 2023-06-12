@@ -21,10 +21,12 @@ if __name__ == "__main__":
 
     plt.show()
 
-    wiggle = 0.02
-    f = open("results/wiggle_02.txt", "w")
+    wiggle = 0.03
+    f = open("results/wiggle_03.txt", "w")
 
-    for i in range(20):
+    t = None
+
+    for i in range(2):
         tess = voronoi_tessellation_from_points(points)
 
         for v in tess.vertices:
@@ -36,9 +38,13 @@ if __name__ == "__main__":
 
         final_tess = voronoi_tessellation_from_points(approx.generator_points)
 
-        discrepancy = calculate_discrepancy(tess, final_tess)
+        try:
+            discrepancy = calculate_discrepancy(tess, final_tess)
+            f.write(f"{approx.omega},{discrepancy.area},{approx.time_taken}\n")
+        except:
+            print("uh")
 
-        f.write(f"{approx.omega},{discrepancy.area},{approx.time_taken}\n")
+        t = tess
 
     f.close()
 
@@ -47,5 +53,6 @@ if __name__ == "__main__":
 
     plt.legend(handles=[black_patch, blu_patch])
 
+    t.plot(color="black")
     final_tess.plot(color="blue")
     plt.show()
