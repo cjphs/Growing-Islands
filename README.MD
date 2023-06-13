@@ -1,11 +1,3 @@
-# Approximating Voronoi diagrams via label-based gradients
+# Measuring Voronoi-likeness for approximations of arbitrary tessellations
 
-Bsc Thesis 2023
-
-## To-do
-### Code
-[ ] 
-
-### Report
-[ ] Methodology
-- [ ]
+Bsc Thesis "Data Science & Artificial Intelligence", 2023.
