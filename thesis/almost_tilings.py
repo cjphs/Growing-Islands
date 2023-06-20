@@ -48,6 +48,8 @@ if __name__ == "__main__":
 
     f.close()
 
+    print(calculate_discrepancy(t, final_tess).area)
+
     black_patch = mpatches.Patch(color="black", label="Input tessellation")
     blu_patch = mpatches.Patch(color="blue", label="Voronoi approximation")
 
