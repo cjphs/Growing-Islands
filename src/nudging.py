@@ -1,5 +1,5 @@
 from geometry import Point
-from preprocessing import get_region_estimator_point
+from label_points import get_region_generator_point
 
 
 # Returns true if any estimator was nudged. False -> All labels are okay
@@ -29,7 +29,7 @@ def nudge_estimators(
         vertex_point = label_point
 
         if closest_estimator.label != label_point.label:
-            label_point_region_estimator_point = get_region_estimator_point(
+            label_point_region_estimator_point = get_region_generator_point(
                 estimator_points, label_point.label
             )
 

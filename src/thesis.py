@@ -66,7 +66,7 @@ def main():
     # load_from_file = "in/diagram_field2.txt"
     # load_from_file = "in/fields3.txt"
     # load_from_file = "in/14-04-12_40_0.0005.txt"
-    load_from_file = "in/territories.txt"
+    # load_from_file = "in/territories.txt"
 
     original_points = []
 
@@ -122,7 +122,7 @@ def main():
 
     print(f"Lower bound for omega: {approximation.omega}")
 
-    print(f"om... {approximation.compute_omega_2(approximation.bestimator_points)}")
+    print(f"om... {approximation.compute_omega(approximation.bestimator_points)}")
 
     if not gui:
         tessellation.plot()

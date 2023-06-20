@@ -1,17 +1,13 @@
 from matplotlib import pyplot as plt
 from nudging import nudge_estimators
-from preprocessing import (
-    generate_label_points,
-    generate_label_points_from_generators,
-    get_region_estimator_point,
-)
+from label_points import generate_label_points_from_generators
 
 import sys
 import os
 from datetime import datetime
 from math import floor
 
-from geometry import Point, Tessellation, copy_points_list
+from geometry import Point, Tessellation
 
 from helper_funcs import clamp
 
@@ -29,7 +25,6 @@ class VoronoiApproximation:
         self.gui = gui
         self.print_progress = print_progress
 
-        self.omega = 1
         self.done = False
 
         print(self.tessellation.regions)
@@ -38,14 +33,14 @@ class VoronoiApproximation:
 
         self.time_taken = None
 
-        self.vertex_label_points = generate_label_points(tessellation, 1, gui=False)
+        self.vertex_label_points = generate_label_points_from_generators(
+            tessellation, self.generator_points, 1, gui=False
+        )
 
         if clamp_to_diagram:
             for p in self.generator_points:
                 p.x = clamp(p.x, self.tessellation.xmin, self.tessellation.xmax)
                 p.y = clamp(p.y, self.tessellation.ymin, self.tessellation.ymax)
-
-        initial_omega = self.compute_omega_2(self.generator_points)
 
     def on_press(self, event) -> None:
         print(event.key)
@@ -53,58 +48,8 @@ class VoronoiApproximation:
         if event.key == "x":
             self.done = True
 
-    def compute_omega(self, points: list[Point]) -> float:
-        omega_min, omega_max = 0, 1
-
-        # first, get all points that are within the circle VC
-
-        for i, p in enumerate(points):
-            region = self.tessellation.regions[p.label]
-            c = Point(p.x, p.y)
-
-            for r in region:
-                v = Point(
-                    self.tessellation.vertices[r].x, self.tessellation.vertices[r].y
-                )
-
-                for j, q in enumerate(points):
-                    if j == i:
-                        continue
-
-                    if v.distance(q) > max(v.distance(p), v.distance(c)):
-                        continue
-
-                    top = (
-                        (q.x**2 + q.y**2)
-                        - (p.x**2 + p.y**2)
-                        - 2 * c.x * (q.x - p.x)
-                        - 2 * c.y * (q.y - p.y)
-                    )
-                    bottom = (v.x - c.x) * (2 * q.x - 2 * p.x) + (v.y - c.y) * (
-                        2 * q.y - 2 * p.y
-                    )
-
-                    if bottom == 0:
-                        omega_max = 1
-                        continue
-
-                    om = top / bottom
-
-                    if 0 <= om <= 1:
-                        if bottom > 0:
-                            omega_max = min(om, omega_max)
-                        elif bottom < 0:
-                            omega_min = max(-om, omega_min)
-                        else:
-                            print("we got a 0!")
-
-        if omega_max >= omega_min:
-            return omega_max
-        else:
-            return None
-
     # Compute using the spokes from the generator points instead
-    def compute_omega_2(self, points: list[Point]) -> float:
+    def compute_omega(self, points: list[Point]) -> float:
         omega_min, omega_max = 0, 1
 
         # first, get all points that are within the circle VC
@@ -178,13 +123,11 @@ class VoronoiApproximation:
 
         iterations = 0
 
-        force_quit = False
-
         done = False
         while not done:
             iteration_phi = phi
 
-            omega = self.compute_omega_2(self.generator_points)
+            omega = self.compute_omega(self.generator_points)
             omega_target = omega + (1 - omega) / 2
             phi = original_phi * (1 - omega)
 
@@ -213,7 +156,7 @@ class VoronoiApproximation:
                 self.points_satisfied.append(satisfied_percentage)
 
                 if not nudged:
-                    print(f"all good man! satisfied % = {satisfied_percentage}")
+                    print(f"All labels satisfied!")
                     all_labels_satisfied = True
                     break
 
@@ -225,8 +168,8 @@ class VoronoiApproximation:
                     iterations_since_highest += 1
                     if iterations_since_highest >= iterations_before_reduction:
                         omega_target = (omega_target + omega) / 2
-                        print("omega down! ", omega_target, omega)
-                        iterations_since_highest = 0  #
+                        print("Omega reduction", omega_target, "->", omega)
+                        iterations_since_highest = 0  
 
                 if omega_target - omega < 0.001:
                     done = True
