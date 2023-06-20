@@ -4,8 +4,8 @@ from matplotlib import pyplot as plt
 sys.path.append("../thesis")
 sys.path.append("./thesis")
 
-from voronoi_likeness.geometry import Tessellation
-from voronoi_likeness.voronoi import random_voronoi_tessellation
+from src.geometry import Tessellation
+from src.voronoi import random_voronoi_tessellation
 
 n = 100
 
