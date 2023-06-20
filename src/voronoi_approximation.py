@@ -99,12 +99,10 @@ class VoronoiApproximation:
         else:
             return None
 
-    def do_thingy(
+    def start(
         self,
         phi: float = 0.005,
-        iterations_before_reduction: int = 200,
-        omega_reduction: float = 0.05,
-        margin: float = 1,
+        iterations_before_reduction: int = 50
     ) -> list[Point]:
         begin = datetime.now()
 

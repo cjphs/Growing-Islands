@@ -112,7 +112,7 @@ def main():
     )
 
     # Run the approximation algorithm.
-    approximation.do_thingy(phi=0.02, iterations_before_reduction=50, margin=1)
+    approximation.start(phi=0.02, iterations_before_reduction=50)
 
     plt.box(False)
 
