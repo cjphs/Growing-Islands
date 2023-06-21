@@ -3,7 +3,7 @@ from label_points import get_region_generator_point
 
 
 # Returns true if any estimator was nudged. False -> All labels are okay
-def nudge_estimators(
+def nudge_generator_points(
     estimator_points: list[Point],
     label_points: list[Point],
     phi: float,

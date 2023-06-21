@@ -1,5 +1,5 @@
 from matplotlib import pyplot as plt
-from nudging import nudge_estimators
+from nudging import nudge_generator_points
 from label_points import generate_label_points_from_generators
 
 import sys
@@ -140,7 +140,7 @@ class VoronoiApproximation:
                     self.tessellation, self.generator_points, omega_target, gui=self.gui
                 )
 
-                nudged, satisfied_count = nudge_estimators(
+                nudged, satisfied_count = nudge_generator_points(
                     self.generator_points,
                     label_points,
                     phi,
