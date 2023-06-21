@@ -10,6 +10,7 @@ from math import floor
 from geometry import Point, Tessellation
 
 from helper_funcs import clamp
+from voronoi import voronoi_tessellation_from_points
 
 
 class VoronoiApproximation:
@@ -149,6 +150,13 @@ class VoronoiApproximation:
                     diagram=self.tessellation,
                     gui=self.gui,
                 )
+
+                
+                if iterations % 10 == 0:
+                    tess_tween = voronoi_tessellation_from_points(self.generator_points)
+                    tess_tween.plot()
+                    plt.savefig(f"gif/tween_{iterations}.png")
+                    plt.close()
 
                 satisfied_percentage = satisfied_count / len(label_points)
                 self.points_satisfied.append(satisfied_percentage)

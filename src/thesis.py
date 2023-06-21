@@ -67,6 +67,7 @@ def main():
     # load_from_file = "in/fields3.txt"
     # load_from_file = "in/14-04-12_40_0.0005.txt"
     # load_from_file = "in/territories.txt"
+    load_from_file = "in/wiggle.txt"
 
     original_points = []
 
@@ -104,6 +105,10 @@ def main():
     # The main part... #
     ####################
 
+    tessellation.plot()
+    plt.savefig('input_tessellation.png')
+    plt.close()
+
     approximation = VoronoiApproximation(tessellation, gui=gui, print_progress=False)
 
     # Create Voronoi diagram from centroids to compare later on.
@@ -134,6 +139,7 @@ def main():
     enforce_plot_scale(xmin, xmax, ymin, ymax)
     plt.pause(1e-10)
 
+
     print(
         f"Area discrepancy og: {calculate_discrepancy(tessellation, original_approximation).area} %"
     )
@@ -141,7 +147,8 @@ def main():
     tessellation.plot(color="black")
     final_tess.plot(color="red")
     # enforce_plot_scale(xmin,xmax,ymin,ymax)
-    plt.show()
+    plt.savefig('output_tessellation.png')
+    plt.close()
 
     for p in approximation.generator_points:
         plt.scatter(p.x, p.y, color="red", marker="o")
