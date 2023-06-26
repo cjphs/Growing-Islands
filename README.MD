@@ -1,4 +1,4 @@
-# Measuring Voronoi-likeness for approximations of arbitrary tessellations
+# Growing islands to approximate tessellations of the plane by Voronoi diagrams
 
 Bsc Thesis "Data Science & Artificial Intelligence", 2023.
 
