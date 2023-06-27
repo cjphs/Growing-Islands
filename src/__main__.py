@@ -62,34 +62,14 @@ def main():
 
     # generate new voronoi diagram from final estimator point positions
     final_tess = voronoi_tessellation_from_points(approximation.bestimator_points)
-    # final_tess.plot(color='blue')
-    enforce_plot_scale(xmin, xmax, ymin, ymax)
-    plt.pause(1e-10)
-
-
-    print(
-        f"Area discrepancy og: {calculate_discrepancy(tessellation, original_approximation).area} %"
-    )
     print(f"Area discrepancy: {calculate_discrepancy(tessellation, final_tess).area} %")
+
     tessellation.plot(color="black")
     final_tess.plot(color="red")
-    # enforce_plot_scale(xmin,xmax,ymin,ymax)
-    plt.savefig('output_tessellation.png')
-    plt.close()
 
     for p in approximation.generator_points:
         plt.scatter(p.x, p.y, color="red", marker="o")
-    # for p in original_points:
-    #    plt.scatter(p.x, p.y, color='black', marker='x')
 
-    plt.figure()
-    plt.plot(approximation.points_satisfied, color="black")
-    plt.title(label="Percentage of label points satisfied over time")
-    plt.ylim([0, 1])
-    plt.ylabel("% Satisfied label points")
-    plt.xlabel("Time step")
-
-    plt.pause(1e-10)
     plt.show()
 
 
