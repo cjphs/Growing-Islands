@@ -1,5 +1,3 @@
-import sys
-
 from datetime import datetime
 
 from geometry import Tessellation
