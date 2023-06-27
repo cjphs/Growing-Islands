@@ -17,13 +17,11 @@ class VoronoiApproximation:
     def __init__(
         self,
         tessellation: Tessellation,
-        gui: bool = False,
         clamp_to_diagram: bool = True,
         print_progress: bool = True,
     ):
         self.tessellation = tessellation
 
-        self.gui = gui
         self.print_progress = print_progress
 
         self.done = False
@@ -33,9 +31,9 @@ class VoronoiApproximation:
         self.bestimator_points = self.generator_points
 
         self.time_taken = None
-
+    
         self.vertex_label_points = generate_label_points_from_generators(
-            tessellation, self.generator_points, 1, gui=False
+            tessellation, self.generator_points, 1
         )
 
         if clamp_to_diagram:
@@ -43,17 +41,10 @@ class VoronoiApproximation:
                 p.x = clamp(p.x, self.tessellation.xmin, self.tessellation.xmax)
                 p.y = clamp(p.y, self.tessellation.ymin, self.tessellation.ymax)
 
-    def on_press(self, event) -> None:
-        print(event.key)
-        sys.stdout.flush()
-        if event.key == "x":
-            self.done = True
 
     # Compute using the spokes from the generator points instead
     def compute_omega(self, points: list[Point]) -> float:
         omega_min, omega_max = 0, 1
-
-        # first, get all points that are within the circle VC
 
         for i, p in enumerate(points):
             region = self.tessellation.regions[p.label]
@@ -77,9 +68,7 @@ class VoronoiApproximation:
                         - 2 * p.x * (q.x - p.x)
                         - 2 * p.y * (q.y - p.y)
                     )
-                    bottom = (v.x - p.x) * (2 * q.x - 2 * p.x) + (v.y - p.y) * (
-                        2 * q.y - 2 * p.y
-                    )
+                    bottom = 2*(v.x - p.x)*(q.x - p.x) + 2*(v.y - p.y)*(q.y - p.y)
 
                     if bottom == 0:
                         omega_max = 1
@@ -92,8 +81,6 @@ class VoronoiApproximation:
                             omega_max = min(om, omega_max)
                         elif bottom < 0:
                             omega_min = max(-om, omega_min)
-                        else:
-                            print("we got a 0!")
 
         if omega_max >= omega_min:
             return omega_max
@@ -106,9 +93,6 @@ class VoronoiApproximation:
         iterations_before_reduction: int = 50
     ) -> list[Point]:
         begin = datetime.now()
-
-        if self.gui:
-            plt.gcf().canvas.mpl_connect("key_press_event", self.on_press)
 
         self.points_satisfied = []
 
@@ -124,8 +108,6 @@ class VoronoiApproximation:
 
         done = False
         while not done:
-            iteration_phi = phi
-
             omega = self.compute_omega(self.generator_points)
             omega_target = omega + (1 - omega) / 2
             phi = original_phi * (1 - omega)
@@ -138,7 +120,7 @@ class VoronoiApproximation:
 
             while not all_labels_satisfied:
                 label_points = generate_label_points_from_generators(
-                    self.tessellation, self.generator_points, omega_target, gui=self.gui
+                    self.tessellation, self.generator_points, omega_target
                 )
 
                 nudged, satisfied_count = nudge_generator_points(
@@ -148,15 +130,7 @@ class VoronoiApproximation:
                     pull=True,
                     push=True,
                     diagram=self.tessellation,
-                    gui=self.gui,
                 )
-
-                
-                if iterations % 10 == 0:
-                    tess_tween = voronoi_tessellation_from_points(self.generator_points)
-                    tess_tween.plot()
-                    plt.savefig(f"gif/tween_{iterations}.png")
-                    plt.close()
 
                 satisfied_percentage = satisfied_count / len(label_points)
                 self.points_satisfied.append(satisfied_percentage)
@@ -190,15 +164,6 @@ class VoronoiApproximation:
                     sys.stdout.write("\r" + progress)
                     sys.stdout.flush()
 
-                if self.gui:
-                    for p in self.generator_points:
-                        p.update_plot()
-
-                        if self.diagram.point_inside_region(p, p.label):
-                            p.plot_element[0].set_markerfacecolor("b")
-                        else:
-                            p.plot_element[0].set_markerfacecolor("aqua")
-
                     plt.pause(1e-10)
 
         end = datetime.now()
@@ -210,4 +175,4 @@ class VoronoiApproximation:
         sys.stdout.flush()
         print()
 
-        return self.bestimator_points
+        return self.generator_points
