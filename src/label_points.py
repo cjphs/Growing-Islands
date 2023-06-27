@@ -10,7 +10,7 @@ def get_region_generator_point(estimator_points, region_label):
 
 
 def generate_label_points_from_generators(
-    tessellation: Tessellation, generators: list, omega: float, gui: bool = False
+    tessellation: Tessellation, generators: list, omega: float
 ) -> list:
     label_points = []
 
@@ -44,10 +44,6 @@ def generate_label_points_from_generators(
 
             l.set_position(delta.x, delta.y)
 
-            if gui:
-                l.plot_element = plt.plot(delta.x, delta.y, "ro")
-            else:
-                l.plot_element = None
 
         label_points.extend(region_label_points)
 

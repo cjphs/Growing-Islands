@@ -9,8 +9,6 @@ def nudge_generator_points(
     phi: float,
     pull: bool = True,
     push: bool = False,
-    diagram=None,
-    gui: bool = False,
 ):
     N = len(estimator_points) * 2
     nudge = [Point(0, 0) for i in range(N)]
@@ -50,13 +48,9 @@ def nudge_generator_points(
             points_nudged = True
 
             label_point.satisfied = False
-            if gui:
-                label_point.plot_element[0].set_markerfacecolor("r")
         else:
             label_point.satisfied = True
             satisfied_count += 1
-            if gui:
-                label_point.plot_element[0].set_markerfacecolor("lime")
 
     for estimator_point in estimator_points:
         test_point = Point(

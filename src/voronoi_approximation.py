@@ -129,7 +129,6 @@ class VoronoiApproximation:
                     phi,
                     pull=True,
                     push=True,
-                    diagram=self.tessellation,
                 )
 
                 satisfied_percentage = satisfied_count / len(label_points)

@@ -27,9 +27,10 @@ def main():
     load_from_file = ""
     # load_from_file = "in/territories.txt"
 
+    # Generate instance for Inverse Voronoi problem
     if load_from_file == "":
 
-        num_points = 40
+        num_points = 32
         tessellation = random_voronoi_tessellation(num_points)
 
         filename = f"in/{datetime.now().strftime(f'%H-%M-%S_{num_points}')}.txt"
