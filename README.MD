@@ -2,7 +2,7 @@
 
 BSc Thesis "Data Science & Artificial Intelligence", 2023
 
-This thesis received a grade of 9 in the Dutch grading system.
+This thesis received a grade of 9.0 in the Dutch grading system.
 
 ![](images/growing.gif)
 
