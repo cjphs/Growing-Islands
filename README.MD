@@ -1,6 +1,7 @@
-# Growing islands to approximate tessellations of the plane by Voronoi diagrams
+## Growing islands to approximate tessellations of the plane by Voronoi diagrams  
+*BSc Thesis Maastricht University, "Data Science & Artificial Intelligence", 2023*
 
-BSc Thesis Maastricht University, "Data Science & Artificial Intelligence", 2023
+___
 
 **Usage**: Refer to the [Just](https://github.com/casey/just)file. Run `just` to see all available commands.
 
