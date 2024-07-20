@@ -13,7 +13,7 @@ install-growing-islands:
 install-tessellation-tracer:
     {{pip}} install -r {{dir_tessellation_tracer}}/requirements.txt
 
-install: install-growing-islands install-trssellation-tracer
+install: install-growing-islands install-tessellation-tracer
 
 # Generates a Voronoi tessellation
 generate-voronoi OUTPUT_FILE NUM_POINTS='32' SEED='0':

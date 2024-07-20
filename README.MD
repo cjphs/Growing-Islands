@@ -5,6 +5,11 @@ ___
 
 **Usage**: Refer to the [Just](https://github.com/casey/just)file. Run `just` to see all available commands.
 
+Example:
+```bash
+just run in/territories.txt # Run the algorithm on the territories.txt file
+```
+
 ___
 
 **Project Modules**:
