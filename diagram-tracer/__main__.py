@@ -1,5 +1,7 @@
 import pygame
 
+import sys
+
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
@@ -39,7 +41,10 @@ point_click_distance = 15
 
 fname = "territories"
 
-input_image = pygame.image.load(f"in/{fname}.png")
+if len(sys.argv) == 0:
+    print("Usage: python diagram_tracer.py <file>")
+    sys.exit(1)
+input_image = pygame.image.load(sys.argv[1])
 
 
 def save_diagram(points, regions, fname="diagram.txt"):

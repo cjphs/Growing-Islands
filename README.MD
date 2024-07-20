@@ -7,7 +7,7 @@ BSc Thesis Maastricht University, "Data Science & Artificial Intelligence", 2023
 ![](images/growing.gif)
 
 
-Usage: `python3 growingislands [<input_file>]`.  
+Usage: `python3 growing-islands [<input_file>]`.  
 
 If no input file is provided, the program will generate a random tessellation and then approximate its generating points.
 
