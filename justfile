@@ -23,10 +23,10 @@ generate-voronoi OUTPUT_FILE NUM_POINTS='32' SEED='0':
 run INPUT_FILE:
     {{python}} {{dir_growing_islands}} {{INPUT_FILE}}
 
-# Opens the diagram tracing program
-open-diagram-tracer INPUT_IMAGE:
-    {{python}} {{dir_diagram_tracer}} {{INPUT_IMAGE}}
-
 # Loads a tessellation from a file and displays it
 show INPUT_FILE:
     {{python}} {{dir_growing_islands}}/geometry.py {{INPUT_FILE}}
+
+# Opens the diagram tracing program
+open-diagram-tracer INPUT_IMAGE:
+    {{python}} {{dir_diagram_tracer}} {{INPUT_IMAGE}}
