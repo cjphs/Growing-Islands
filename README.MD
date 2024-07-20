@@ -4,9 +4,10 @@ BSc Thesis Maastricht University, "Data Science & Artificial Intelligence", 2023
 
 **Usage**: Refer to the [Just](https://github.com/casey/just)file. Run `just` to see all available commands.
 
-**Components**:
-- **growing-islands**: Central thesis codebase
+**Project Modules**:
 - **diagram-tracer**: Program to draw tessellations over images
+- **growing-islands**: Central thesis codebase
+- **thesis-experiments**: Experiments 
 
 ![](images/growing.gif)
 ___
