@@ -39,7 +39,7 @@ point_click_distance = 15
 
 fname = "territories"
 
-input_image = pygame.image.load(f"./misc/diagram_tracer/{fname}.png")
+input_image = pygame.image.load(f"in/{fname}.png")
 
 
 def save_diagram(points, regions, fname="diagram.txt"):
