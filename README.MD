@@ -9,7 +9,7 @@ BSc Thesis Maastricht University, "Data Science & Artificial Intelligence", 2023
 - **growing-islands**: Central thesis codebase
 - **thesis-experiments**: Scripts to run experiments and generate plots used in the thesis
 
-![](images/growing.gif)
+![](misc/images/growing.gif)
 ___
 
 ### Abstract
