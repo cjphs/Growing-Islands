@@ -7,7 +7,7 @@ BSc Thesis Maastricht University, "Data Science & Artificial Intelligence", 2023
 **Project Modules**:
 - **diagram-tracer**: Program to draw tessellations over images
 - **growing-islands**: Central thesis codebase
-- **thesis-experiments**: Experiments 
+- **thesis-experiments**: Scripts to run experiments and generate plots used in the thesis
 
 ![](images/growing.gif)
 ___

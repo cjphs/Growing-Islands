@@ -1,5 +1,5 @@
-dir_growing_islands := 'growing-islands'
-dir_diagram_tracer := 'diagram-tracer'
+dir_growing_islands := 'growing_islands'
+dir_diagram_tracer := 'diagram_tracer'
 
 python := env_var_or_default("PYTHON", "python3")
 pip := env_var_or_default("PIP", "python3 -m pip")
