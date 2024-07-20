@@ -1,6 +1,6 @@
 # Growing islands to approximate tessellations of the plane by Voronoi diagrams
 
-BSc Thesis "Data Science & Artificial Intelligence", 2023
+BSc Thesis Maastricht University, "Data Science & Artificial Intelligence", 2023
 
 *This thesis received a grade of 9.0 (out of 10) in the Dutch grading system.*
 
