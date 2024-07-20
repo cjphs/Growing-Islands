@@ -2,15 +2,9 @@
 
 BSc Thesis Maastricht University, "Data Science & Artificial Intelligence", 2023
 
-*This thesis received a grade of 9.0 (out of 10) in the Dutch grading system.*
+**Usage**: Refer to the [Just](https://github.com/casey/just)file. Run `just` to see all available commands.
 
 ![](images/growing.gif)
-
-
-Refer to the [Just](https://github.com/casey/just)file. Run `just` to see all available commands.
-
-If no input file is provided, the program will generate a random tessellation and then approximate its generating points.
-
 ___
 
 ### Abstract
@@ -19,3 +13,5 @@ ___
 
 
 📃 Details & results can be found in the [paper](report.pdf).
+
+*This thesis received a grade of 9.0 (out of 10) in the Dutch grading system.*
