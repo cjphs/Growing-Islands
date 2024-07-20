@@ -26,3 +26,7 @@ run INPUT_FILE:
 # Opens the diagram tracing program
 open-diagram-tracer INPUT_IMAGE:
     {{python}} {{dir_diagram_tracer}} {{INPUT_IMAGE}}
+
+# Loads a tessellation from a file and displays it
+show INPUT_FILE:
+    {{python}} {{dir_growing_islands}}/geometry.py {{INPUT_FILE}}

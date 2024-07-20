@@ -10,6 +10,7 @@ from voronoi import (
 )
 import sys
 
+
 def enforce_plot_scale(xmin, xmax, ymin, ymax):
     ax = plt.gca()
     ax.set_xlim([xmin, xmax])
@@ -23,7 +24,7 @@ def main():
 
     xmin, xmax = 0, 1
     ymin, ymax = 0, 1
-    
+
     load_from_file = ""
     if len(sys.argv) > 1:
         load_from_file = sys.argv[1]

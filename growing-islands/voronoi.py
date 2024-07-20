@@ -67,16 +67,18 @@ if __name__ == "__main__":
     import sys
 
     if len(sys.argv) < 3:
-        print("Usage: python voronoi.py <output_txt_file> [--num_points <points=30>] [--show] [--seed <seed>]")
+        print(
+            "Usage: python voronoi.py <output_txt_file> [--num_points <points=30>] [--show] [--seed <seed>]"
+        )
         sys.exit(1)
 
     output_txt_file = sys.argv[1]
-    
+
     num_points = 32
     if "--num_points" in sys.argv:
         num_points_index = sys.argv.index("--num_points")
         num_points = int(sys.argv[num_points_index + 1])
-    
+
     if "--seed" in sys.argv:
         seed_index = sys.argv.index("--seed")
         seed = int(sys.argv[seed_index + 1])
@@ -84,7 +86,7 @@ if __name__ == "__main__":
 
     tess = random_voronoi_tessellation(num_points=num_points)
     tess.plot()
-    
+
     tess.save_to_txt(output_txt_file)
 
     if "--show" in sys.argv:

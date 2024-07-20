@@ -215,3 +215,14 @@ class Tessellation:
 
 def copy_points_list(points_list: list):
     return [Point(p.x, p.y, p.label) for p in points_list]
+
+
+if __name__ == "__main__":
+    import sys
+
+    if len(sys.argv) < 2:
+        print("Usage: python voronoi.py <output_txt_file>")
+        sys.exit(1)
+    tess = Tessellation(txt_file=sys.argv[1])
+    tess.plot()
+    plt.show()

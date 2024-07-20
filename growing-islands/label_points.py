@@ -44,7 +44,6 @@ def generate_label_points_from_generators(
 
             l.set_position(delta.x, delta.y)
 
-
         label_points.extend(region_label_points)
 
     return label_points

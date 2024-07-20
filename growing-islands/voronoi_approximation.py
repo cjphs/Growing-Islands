@@ -31,7 +31,7 @@ class VoronoiApproximation:
         self.bestimator_points = self.generator_points
 
         self.time_taken = None
-    
+
         self.vertex_label_points = generate_label_points_from_generators(
             tessellation, self.generator_points, 1
         )
@@ -40,7 +40,6 @@ class VoronoiApproximation:
             for p in self.generator_points:
                 p.x = clamp(p.x, self.tessellation.xmin, self.tessellation.xmax)
                 p.y = clamp(p.y, self.tessellation.ymin, self.tessellation.ymax)
-
 
     # Compute using the spokes from the generator points instead
     def compute_omega(self, points: list[Point]) -> float:
@@ -68,7 +67,9 @@ class VoronoiApproximation:
                         - 2 * p.x * (q.x - p.x)
                         - 2 * p.y * (q.y - p.y)
                     )
-                    bottom = 2*(v.x - p.x)*(q.x - p.x) + 2*(v.y - p.y)*(q.y - p.y)
+                    bottom = 2 * (v.x - p.x) * (q.x - p.x) + 2 * (v.y - p.y) * (
+                        q.y - p.y
+                    )
 
                     if bottom == 0:
                         omega_max = 1
@@ -88,9 +89,7 @@ class VoronoiApproximation:
             return None
 
     def start(
-        self,
-        phi: float = 0.005,
-        iterations_before_reduction: int = 50
+        self, phi: float = 0.005, iterations_before_reduction: int = 50
     ) -> list[Point]:
         begin = datetime.now()
 
@@ -148,7 +147,7 @@ class VoronoiApproximation:
                     if iterations_since_highest >= iterations_before_reduction:
                         omega_target = (omega_target + omega) / 2
                         print("Omega reduction", omega_target, "->", omega)
-                        iterations_since_highest = 0  
+                        iterations_since_highest = 0
 
                 if omega_target - omega < 0.001:
                     done = True
