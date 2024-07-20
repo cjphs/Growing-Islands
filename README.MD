@@ -8,9 +8,9 @@ ___
 ___
 
 **Project Modules**:
-- **diagram-tracer**: Program to draw tessellations over images
-- **growing-islands**: Central thesis codebase
-- **thesis-experiments**: Scripts to run experiments and generate plots used in the thesis
+- **growing_islands**: Central thesis codebase
+- **tessellation_tracer**: Program to draw tessellations over images
+- **thesis_experiments**: Scripts to run experiments and generate plots used in the thesis
 
 ![](misc/images/growing.gif)
 ___
