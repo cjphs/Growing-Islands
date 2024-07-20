@@ -8,7 +8,7 @@ from voronoi import (
     random_voronoi_tessellation,
     voronoi_tessellation_from_points,
 )
-
+import sys
 
 def enforce_plot_scale(xmin, xmax, ymin, ymax):
     ax = plt.gca()
@@ -25,14 +25,12 @@ def main():
     ymin, ymax = 0, 1
     
     load_from_file = ""
-    # load_from_file = "in/territories.txt"
+    if len(sys.argv) > 1:
+        load_from_file = sys.argv[1]
 
-    # Generate instance for Inverse Voronoi problem
     if load_from_file == "":
-
         num_points = 32
         tessellation = random_voronoi_tessellation(num_points)
-
         filename = f"in/{datetime.now().strftime(f'%H-%M-%S_{num_points}')}.txt"
         tessellation.save_to_txt(f"{filename}")
     else:
