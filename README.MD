@@ -5,6 +5,8 @@ ___
 
 **Usage**: Refer to the [Just](https://github.com/casey/just)file. Run `just` to see all available commands.
 
+___
+
 **Project Modules**:
 - **diagram-tracer**: Program to draw tessellations over images
 - **growing-islands**: Central thesis codebase
