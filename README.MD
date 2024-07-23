@@ -1,3 +1,7 @@
+<p align="right">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Maastricht_University_logo_%282017_new_version%29.svg" width="200" />
+</p>
+
 ## Growing islands to approximate tessellations of the plane by Voronoi diagrams  
 *BSc Thesis Maastricht University, "Data Science & Artificial Intelligence", 2023*
 
